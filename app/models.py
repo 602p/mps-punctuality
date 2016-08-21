@@ -1,6 +1,7 @@
 from . import db
 
 class Student(db.Model):
+	__tablename__="students"
 	id = db.Column(db.Integer, primary_key=True)
 	marss_id = db.Column(db.Integer, unique=True)
 	first_name = db.Column(db.String(100))
@@ -27,13 +28,15 @@ class Student(db.Model):
 		return '<Student %r>' % (self.first_name+self.last_name)
 
 class AttendaceEvent(db.Model):
+	__tablename__="attendanceevents"
 	id = db.Column(db.Integer, primary_key=True)
-	student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
+	student_id = db.Column(db.Integer, db.ForeignKey('students.id'))
 	student = db.relationship('Student',
-		backref=db.backref('attendance_events', lazy='dynamic'))
+		backref=db.backref('attendance_events', lazy='dynamic'),
+		foreign_keys="AttendaceEvent.student_id")
 	time = db.Column(db.DateTime)
-	consequence_id = db.Column(db.Integer, db.ForeignKey('student.id'))
-	consequence = db.relationship('Consequence')
+	consequence_id = db.Column(db.Integer, db.ForeignKey('consequences.id'))
+	consequence = db.relationship('Consequence', foreign_keys="AttendaceEvent.consequence_id")
 	consequence_status = db.Column(db.Boolean)
 	comment = db.Column(db.Text)
 
@@ -47,6 +50,7 @@ class AttendaceEvent(db.Model):
 		return "<AttendaceEvent %r: %r>" % self.id, self.time
 
 class Consequence(db.Model):
+	__tablename__="consequences"
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(30))
 	description = db.Column(db.Text)
