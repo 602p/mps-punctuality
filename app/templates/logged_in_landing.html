@@ -17,9 +17,9 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
+<div style="text-align:center;margin-top:5%"><h1>MPS Punctuality Tracker</h1></div>
 <div class="row">
-    <div class="twelve columns" style="margin-top: 15%">
-        <h1>MPS Punctuality Tracker</h1>
+    <div class="twelve columns" style="margin-top: 5%">
         <h6>David Groos, Louis Goessling et. al.</h6>
     </div>
 </div>
@@ -30,12 +30,70 @@ $(document).ready(function() {
             <div class="row">
                 <div class="six columns">
                     Simple Student Find:
-                    <input type="text" placeholder="Start Typing..." id="simple_search" name="student_uid_name" style="height:100%" class="u-full-width">
+                    <input type="text" placeholder="Start Typing..." id="simple_search" name="student_uid_name" style="height:100%" class="u-full-width"><br/>
+                    <input type="submit" class="button-primary" value="Go">
                 </div>
                 <div class="six columns">
                     <div id="autocomplete-container"></div>
                 </div>
             </div>
+        </form>
+    </div>
+</div>
+<hr/>
+<div class="row">
+    <div class="twelve columns">
+        Advanced Search (CONTAINS search for all terms)<br/>
+        <form action="{{url_for('overview')}}"
+            <br/>
+            <div class="row">
+                <div class="four columns">
+                    <input type="text" placeholder="First Name" name="first_name" class="u-full-width">
+                </div>
+                <div class="four columns">
+                    <input type="text" placeholder="Preffered First Name" name="pref_first_name" class="u-full-width">
+                </div>
+                <div class="four columns">
+                    <input type="text" placeholder="Last Name" name="last_name" class="u-full-width">
+                </div>
+            </div>
+            <div class="row">
+                <div class="four columns">
+                    <input type="text" placeholder="MARSS ID" name="marss_id" class="u-full-width">
+                </div>
+                <div class="four columns">
+                    <input type="text" placeholder="More than # tardies" name="meta_tardies_more" class="u-full-width">
+                </div>
+                <div class="four columns">
+                    <input type="text" placeholder="Less than # tardies" name="meta_tardies_less" class="u-full-width">
+                </div>
+            </div>
+            <div class="row">
+                <div class="four columns">
+                    <select name="grade" class="u-full-width">
+                        <option value="9">Freshman</option>
+                        <option value="10">Sophmore</option>
+                        <option value="11">Junior</option>
+                        <option value="12">Senior</option>
+                        <option value="" selected>Do not search based on grade</option>
+                    </select>
+                </div>
+                <div class="four columns">
+                    <select name="status" class="u-full-width">
+                        <option value="active" selected>Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="">Do not search based on status</option>
+                    </select>
+                </div>
+                <div class="four columns">
+                    <select name="meta_unresolved" class="u-full-width">
+                        <option value="yes">Incomplete Consequences</option>
+                        <option value="no">Complete Consequences</option>
+                        <option value="" selected>Do not search based on completed consequences</option>
+                    </select>
+                </div>
+            </div>
+            <input type="submit" class="button-primary" value="Search">
         </form>
     </div>
 </div>

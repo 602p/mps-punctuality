@@ -1,0 +1,39 @@
+{# app/templates/overviewo.html #}
+
+{% extends "layout.html" %}
+
+{% block title %}Overview{% endblock %}
+
+{% block content %}
+<div style="text-align:center;margin-top:5%;"><h3 style="display:inline-block"><a href="/">&lt;&lt;</a><h1 style="display:inline-block">Student Overview</h1></div>
+<div class="row">
+    <div class="twelve columns" style="margin-top: 5%">
+        <table border=1 class="u-full-width">
+            <tr>
+                <b>
+                    <td>MARSS ID</td>
+                    <td>First Name</td>
+                    <td>(Pref)</td>
+                    <td>Last Name</td>
+                    <td>Grade</td>
+                    <td>Status</td>
+                    <td># Tardies</td>
+                    <td>Unresolved</td>
+                </b>
+            </tr>
+            {% for student in students %}
+            <tr>
+                <td><a href="{{url_for("student_view", sid=student.id)}}">{{student.marss_id}}</a></td>
+                <td>{{student.first_name}}</td>
+                <td>{{student.pref_first_name}}</td>
+                <td>{{student.last_name}}</td>
+                <td>{{student.grade}}</td>
+                <td>{{student.status}}</td>
+                <td><div style="color:{{('red' if student.attendance_events.__len__()>1 else 'orange') if student.attendance_events.__len__()  else 'green'}};font-weight:{{'bold' if student.attendance_events.__len__()>1 else ''}}">{{student.attendance_events.__len__()}}</td>
+                <td><div style="color:{{'red' if student.unresolved_events else 'green'}};font-weight:{{'bold' if student.unresolved_events else ''}}">{{student.unresolved_events}}</div></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

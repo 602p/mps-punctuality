@@ -39,6 +39,10 @@ class Student(db.Model):
 	def uid_name(self):
 		return self.first_name+" "+self.last_name+" ("+str(self.marss_id)+")"
 
+	@property
+	def unresolved_events(self):
+		return len([e for e in self.attendance_events if not e.consequence_status])
+
 	@classmethod
 	def split_uid_name(cls, name):
 		return [name.split(" (")[0], int(name.split(" (")[1][:-1])]

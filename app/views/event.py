@@ -18,4 +18,4 @@ def edit_event(sid, eid):
 		db.session.commit()
 		return redirect(url_for('student_view', sid=sid))
 	if request.method=="GET":
-		return render_template("edit_event.html", event=models.AttendanceEvent.query.filter_by(id=eid).one())
+		return render_template("edit_event.html", event=models.AttendanceEvent.query.filter_by(id=eid).one(), sid=sid)

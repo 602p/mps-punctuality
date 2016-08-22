@@ -31,9 +31,9 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
+<div style="text-align:center;margin-top:5%;"><h3 style="display:inline-block"><a href="{{url_for('student_view', sid=sid)}}">&lt;&lt;</a><h1 style="display:inline-block">Edit Event</h1></div>
 <div class="row">
-    <div class="one-half column" style="margin-top: 15%">
-        <h1>Edit Event</h1>
+    <div class="one-half column" style="margin-top: 5%">
         <form action="" method="post">
             Student: <input disabled class="u-full-width" type="text" placeholder="Start Typing..." id="student_uid_name" name="student_uid_name" value="{{event.student.uid_name}}"> <br/>
             Time: 
