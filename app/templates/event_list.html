@@ -1,0 +1,42 @@
+{# app/templates/event_list.html #}
+
+<html>
+    <head>
+        <title>Event List</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script type="text/javascript">
+        $(function() {
+            $('.confirm').click(function() {
+                return window.confirm("Are you sure?");
+            });
+        });
+        </script>
+    </head>
+    <body>
+        <h1>Event List</h1>
+        <table border=1>
+            <tr>
+                <b>
+                    <td>Internal ID</td>
+                    <td>Student</td>
+                    <td>Time</td>
+                    <td>Consequence</td>
+                    <td>Comment</td>
+                    <td>Consequence Status</td>
+                    <td>Tools</td>
+                </b>
+            </tr>
+            {% for event in events %}
+            <tr>
+                <td>{{event.id}}</td>
+                <td>{{event.student.uid_name}}</td>
+                <td>{{event.time}}</td>
+                <td>{{event.consequence}}</td>
+                <td>{{event.comment}}</td>
+                <td>{{event.consequence_status}}</td>
+                <td><a class="confirm" href="/delete_event/{{event.id}}">[delete]</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>

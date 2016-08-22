@@ -1,4 +1,7 @@
 from . import db
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy import func
+import datetime
 
 class Student(db.Model):
 	__tablename__="students"
@@ -24,19 +27,35 @@ class Student(db.Model):
 		self.phonedata=phonedata
 		self.comment=comment
 
+	@classmethod
+	def empty(cls):
+		return cls(-1, "","",None,-1)
+
+	@hybrid_property
+	def full_name(self):
+		return self.first_name+" "+self.last_name
+
+	@property
+	def uid_name(self):
+		return self.first_name+" "+self.last_name+" ("+str(self.marss_id)+")"
+
+	@classmethod
+	def split_uid_name(cls, name):
+		return [name.split(" (")[0], int(name.split(" (")[1][:-1])]
+
 	def __repr__(self):
 		return '<Student %r>' % (self.first_name+self.last_name)
 
-class AttendaceEvent(db.Model):
+class AttendanceEvent(db.Model):
 	__tablename__="attendanceevents"
 	id = db.Column(db.Integer, primary_key=True)
 	student_id = db.Column(db.Integer, db.ForeignKey('students.id'))
 	student = db.relationship('Student',
-		backref=db.backref('attendance_events', lazy='dynamic'),
-		foreign_keys="AttendaceEvent.student_id")
+		backref=db.backref('attendance_events', lazy='joined'),
+		foreign_keys="AttendanceEvent.student_id")
 	time = db.Column(db.DateTime)
 	consequence_id = db.Column(db.Integer, db.ForeignKey('consequences.id'))
-	consequence = db.relationship('Consequence', foreign_keys="AttendaceEvent.consequence_id")
+	consequence = db.relationship('Consequence', foreign_keys="AttendanceEvent.consequence_id", backref=db.backref('attendance_events', lazy='joined'))
 	consequence_status = db.Column(db.Boolean)
 	comment = db.Column(db.Text)
 
@@ -46,8 +65,12 @@ class AttendaceEvent(db.Model):
 		self.comment=comment
 		self.consequence_status=False
 
+	@classmethod
+	def empty(cls):
+		return cls(-1,datetime.datetime.now(),"")
+
 	def __repr__(self):
-		return "<AttendaceEvent %r: %r>" % self.id, self.time
+		return "<AttendanceEvent %r: %r>" % (self.id, self.time)
 
 class Consequence(db.Model):
 	__tablename__="consequences"
@@ -61,8 +84,12 @@ class Consequence(db.Model):
 		self.trigger=trigger
 		self.name=name
 
+	@classmethod
+	def empty(cls):
+		return cls("","","")
+
 	def __repr__(self):
-		return "<Consequence %r -> %r>" % self.trigger, self.description
+		return "<Consequence %r: %r -> %r>" % (self.name, self.trigger, self.description)
 
 	def triggered(self, num_tardies):
 		return eval(self.trigger, {}, {"n":num_tardies})

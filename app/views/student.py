@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, request
-import sqlalchemy
+import sqlalchemy, json
 
 from .. import app, db
 from .. import models
@@ -8,34 +8,19 @@ from .. import util
 
 @app.route('/create_student', methods=["GET", "POST"])
 def create_student():
-	return edit_internal(-1)
+	return edit_student(-1)
 
 @app.route('/edit_student/<sid>', methods=["GET", "POST"])
 def edit_student(sid):
-	print(request.args)
-	return edit_internal(sid)
-
-def edit_internal(sid):
-	print(request.args)
 	sid=int(sid)
 	mode="Create" if sid==-1 else "Update"
 	if request.method=="POST":
 		form = forms.StudentForm(request.form)
-
 		if form.validate():
 			if sid==-1:
-				db.session.add(models.Student(
-					form.marss_id.data,
-					form.first_name.data,
-					form.last_name.data,
-					form.pref_first_name.data if form.pref_first_name.data is not "" else None,
-					form.grade.data,
-					form.status.data,
-					None,
-					form.phonedata.data,
-					form.comment.data
-				))
-				
+				student=models.Student.empty()
+				form.fill_to(student)
+				db.session.add(student)
 			else:
 				form.fill_to(models.Student.query.filter_by(id=sid).one())
 			try:
@@ -64,3 +49,8 @@ def delete_student(sid):
 	models.Student.query.filter_by(id=int(sid)).delete()
 	db.session.commit()
 	return redirect(url_for("student_list"))
+
+@app.route("/autocomplete_student", methods=['GET'])
+def autocomplete_student():
+	return json.dumps([x.uid_name for x in 
+		models.Student.query.filter(models.Student.full_name.contains(request.args.get("term"))).limit(10).all()])

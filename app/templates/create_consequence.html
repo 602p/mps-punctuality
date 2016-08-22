@@ -1,0 +1,20 @@
+{# app/templates/create_consequence.html #}
+
+<html>
+    <head>
+        <title>{{mode}} Consequence</title>
+    </head>
+    <body>
+        <h1>{{mode}} Consequence</h1>
+        {% if error %}
+            <font color="red"><b> ERROR: {{error}} </b></font>
+        {% endif %}
+        <form action="" method="post">
+            Name: {{form.name}} <br/>
+            Description: {{form.description}} <br/>
+            Trigger (python script): {{form.trigger}} <br/>
+            {{ form.csrf_token }}
+            <input type="submit" value="Submit">
+        </form>
+    </body>
+</html>

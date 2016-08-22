@@ -1,0 +1,40 @@
+{# app/templates/consequence_list.html #}
+
+<html>
+    <head>
+        <title>Consequence List</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script type="text/javascript">
+        $(function() {
+            $('.confirm').click(function() {
+                return window.confirm("Are you sure?");
+            });
+        });
+        </script>
+    </head>
+    <body>
+        <h1>Consequence List</h1>
+        <table border=1>
+            <tr>
+                <b>
+                    <td>Internal ID</td>
+                    <td>Name</td>
+                    <td>Trigger</td>
+                    <td>Comment</td>
+                    <td>Events applying this</td>
+                    <td>Tools</td>
+                </b>
+            </tr>
+            {% for consequence in consequences %}
+            <tr>
+                <td>{{consequence.id}}</td>
+                <td>{{consequence.name}}</td>
+                <td>{{consequence.trigger}}</td>
+                <td>{{consequence.description}}</td>
+                <td>{{consequence.attendance_events.__len__()}}</td>
+                <td><a href="/edit_consequence/{{consequence.id}}">[edit]</a> <a class="confirm" href="/delete_consequence/{{consequence.id}}">[delete]</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>

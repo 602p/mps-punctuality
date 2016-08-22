@@ -2,23 +2,27 @@
 
 <html>
     <head>
-        <title>{{mode}} student</title>
+        <title>Add Event</title>
+        <link rel="stylesheet" type="text/css" href="/static/jquery.datetimepicker.css"/ >
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+        <script type="text/javascript" src="/static/jquery.datetimepicker.full.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.js"></script>
+        <script type="text/javascript">
+        $(document).ready(function() {
+          $('#student_uid_name').autocomplete({
+            autoFocus:true,
+            source:"/autocomplete_student"
+          });
+          $('#time').datetimepicker();
+        });
+        </script>
     </head>
     <body>
-        <h1>{{mode}} Student</h1>
-        {% if error %}
-            <font color="red"><b> ERROR: {{error}} </b></font>
-        {% endif %}
+        <h1>Add Event</h1>
         <form action="" method="post">
-            MARSS ID: {{ form.marss_id }} <br/>
-            First Name: {{ form.first_name }} <br/>
-            Preffered First Name: {{ form.pref_first_name }} (Optional)<br/>
-            Last Name: {{ form.last_name }} <br/>
-            Grade: {{ form.grade }} <br/>
-            Status: {{ form.status }} <br/>
-            Phone Info: {{ form.phonedata }} <br/>
-            Comment: {{ form.comment }} <br/>
-            {{ form.csrf_token }}
+            Student: {{form.student_uid_name}} <br/>
+            Time: {{form.time}} <br/>
+            Comment: {{form.comment}} <br/>
             <input type="submit" value="Submit">
         </form>
     </body>

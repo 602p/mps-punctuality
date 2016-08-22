@@ -3,6 +3,8 @@ import os
 
 from app import app
 import app.views.student
+import app.views.event
+import app.views.consequence
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

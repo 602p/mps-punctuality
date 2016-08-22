@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 with open("config.json", 'r') as fd:
 	d=json.load(fd)
 	print("config.json loaded -> "+str(d))
