@@ -9,7 +9,7 @@
 $(document).ready(function() {
   $('#simple_search').autocomplete({
     autoFocus:true,
-    source:"/autocomplete_student",
+    source:"{{url_for('autocomplete_student')}}",
     appendTo: "#autocomplete-container"
   });
 });

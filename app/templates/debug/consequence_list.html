@@ -21,6 +21,7 @@
                     <td>Name</td>
                     <td>Trigger</td>
                     <td>Comment</td>
+                    <td>Has Consequence</td>
                     <td>Events applying this</td>
                     <td>Tools</td>
                 </b>
@@ -31,8 +32,9 @@
                 <td>{{consequence.name}}</td>
                 <td>{{consequence.trigger}}</td>
                 <td>{{consequence.description}}</td>
+                <td>{{consequence.has_consequence}}</td>
                 <td>{{consequence.attendance_events.__len__()}}</td>
-                <td><a href="/edit_consequence/{{consequence.id}}">[edit]</a> <a class="confirm" href="/delete_consequence/{{consequence.id}}">[delete]</a></td>
+                <td><a href="{{url_for('d_edit_consequence', sid=consequence.id)}}">[edit]</a> <a class="confirm" href="{{url_for('d_delete_consequence', sid=consequence.id)}}">[delete]</a></td>
             </tr>
             {% endfor %}
         </table>

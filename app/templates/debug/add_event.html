@@ -9,7 +9,7 @@
 $(document).ready(function() {
   $('#student_uid_name').autocomplete({
     autoFocus:true,
-    source:"/autocomplete_student",
+    source:"{{url_for('d_autocomplete_student')}}",
     appendTo: "#autocomplete-container"
   });
   $('#time').datetimepicker();

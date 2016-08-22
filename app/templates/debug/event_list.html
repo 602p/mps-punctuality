@@ -34,7 +34,7 @@
                 <td>{{event.consequence}}</td>
                 <td>{{event.comment}}</td>
                 <td>{{event.consequence_status}}</td>
-                <td><a class="confirm" href="/delete_event/{{event.id}}">[delete]</a></td>
+                <td><a class="confirm" href="{{url_for('d_delete_event', sid=event.id)}}">[delete]</a></td>
             </tr>
             {% endfor %}
         </table>

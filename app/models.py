@@ -78,18 +78,20 @@ class Consequence(db.Model):
 	name = db.Column(db.String(30))
 	description = db.Column(db.Text)
 	trigger = db.Column(db.String(100))
+	has_consequence=db.Column(db.Boolean)
 
-	def __init__(self, name, description, trigger):
+	def __init__(self, name, description, trigger, has_consequence):
 		self.description=description
 		self.trigger=trigger
 		self.name=name
+		self.has_consequence=has_consequence
 
 	@classmethod
 	def empty(cls):
-		return cls("","","")
+		return cls("","","",False)
 
 	def __repr__(self):
-		return "<Consequence %r: %r -> %r>" % (self.name, self.trigger, self.description)
+		return "<Consequence %r: %r -> %r [%r]>" % (self.name, self.trigger, self.description, str(self.has_consequence))
 
 	def triggered(self, num_tardies):
 		return eval(self.trigger, {}, {"n":num_tardies})

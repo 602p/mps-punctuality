@@ -6,38 +6,16 @@ from .. import models
 from .. import forms
 from .. import util
 
-@app.route('/create_event', methods=["GET", "POST"])
-def create_event():
-	if request.method=='POST':
-		form=forms.EventForm(request.form)
-		full_name, mid = models.Student.split_uid_name(form.student_uid_name.data)
-		student=models.Student.query.filter_by(full_name=full_name, marss_id=mid).first()
-		dateobj=datetime.datetime.strptime(form.time.data, "%Y/%m/%d %H:%M")
-		event=models.AttendanceEvent(student.id, dateobj, form.comment.data)
+@app.route('/edit_event/<sid>/<eid>', methods=["GET", "POST"])
+def edit_event(sid, eid):
+	sid, eid = int(sid), int(eid)
+	if request.method=="POST":
+		event=models.AttendanceEvent.query.filter_by(id=eid).one()
+		event.time=datetime.datetime.strptime(request.form.get("time"), "%Y/%m/%d %H:%M")
+		event.comment=request.form.get("comment")
+		event.consequence_status=bool(request.form.get("consequence_status"))
 		db.session.add(event)
-
-		count=len(models.AttendanceEvent.query.filter_by(student_id=student.id).all())
-		triggered=None
-		for consequence in models.Consequence.query.all():
-			if consequence.triggered(count):
-				triggered=consequence
-				break
-
-		if triggered:
-			event.consequence_id=triggered.id
-
 		db.session.commit()
-		return redirect(url_for("event_list"))
-	else:
-		form=forms.EventForm()
-		return render_template("add_event.html", form=form)
-
-@app.route('/events', methods=["GET", "POST"])
-def event_list():
-	return render_template("event_list.html", events=models.AttendanceEvent.query.all())
-
-@app.route("/delete_event/<sid>")
-def delete_event(sid):
-	models.AttendanceEvent.query.filter_by(id=int(sid)).delete()
-	db.session.commit()
-	return redirect(url_for("event_list"))
+		return redirect(url_for('student_view', sid=sid))
+	if request.method=="GET":
+		return render_template("edit_event.html", event=models.AttendanceEvent.query.filter_by(id=eid).one())

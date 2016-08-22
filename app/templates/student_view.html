@@ -16,7 +16,7 @@ $(document).ready(function() {
         "/"+
         d.getDate()+
         " "+
-        (d.getHours()+1)+
+        (d.getHours())+
         ":"+
         d.getMinutes();
     $("#time").val(s);
@@ -26,19 +26,20 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
-<div class="row" style="margin-top:15%">
+<div style="text-align:center;margin-top:5%"><h1>Student View - {{student.uid_name}}</h1></div>
+<div class="row" style="margin-top:5%">
     <div class="six columns">
         <div class="row">
             <div class="six columns">
                 <div class="item">
                     <img src="/static/noimage.png"><br/>
-                    <span class="caption"><b>{{student.first_name}}&nbsp;{{student.last_name}}</b></span>
+                    <span class="caption"><b>{{student.first_name}}&nbsp;{{student.last_name}}</b><br/>{{student.marss_id}}</span>
                 </div>
             </div>
             <div class="six columns">
                 <div class="centered">
                     Number of Tardies:<br/>
-                    <h3><b style="color:{{'red' if assc_events else 'green'}}">{{assc_events}}</b></h3> <br/>
+                    <h3><b style="color:{{('red' if assc_events>1 else 'orange') if assc_events else 'green'}}">{{assc_events}}</b></h3> <br/>
                     Consequences Completed:<br/>
                     <h3><b style="color:{{'green' if consequences_completed else 'red'}}">{{'YES' if consequences_completed else 'NO'}}</b></h3>
                 </div>
@@ -51,7 +52,7 @@ $(document).ready(function() {
                 <h5>Add a Tardy Event</h5>
             </div>
         </div>
-        <form>
+        <form action="{{url_for('add_event', sid=student.id)}}" method='post'>
             Time: 
             <div class="row">
                 <div class="ten columns">
@@ -65,6 +66,40 @@ $(document).ready(function() {
             <br/>
             <input type="submit" class="button-primary" value="Submit">
         </form>
+    </div>
+</div>
+<hr/>
+<div class="row">
+    <div class="twelve columns">
+        <div class="centered"><h6>Log of Tardies:</h6></div><br/>
+        <table>
+            <tr style="font-weight:bold">
+                <td>#</td>
+                <td>Time</td>
+                <td>Period</td>
+                <td>Teacher</td>
+                <td>Author</td>
+                <td>Comment</td>
+                <td>Consequence</td>
+                <td>Description</td>
+                <td>Status</td>
+                <td>Action</td>
+            </tr>
+            {% for event in sorted_events %}
+            <tr>
+                <td>{{sorted_events.index(event)+1}}</td>
+                <td>{{event.time.strftime("%Y/%m/%d %H:%M")}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{event.comment}}</td>
+                <td>{{event.consequence.name}}</td>
+                <td>{{event.consequence.description}}</td>
+                <td><div style="color:{{'green' if event.consequence_status else 'red'}};font-weight:{{'' if event.consequence_status else 'bold'}}">{{('Complete' if event.consequence_status else 'INCOMPLETE') if event.consequence.has_consequence else 'N/a'}}<div></td>
+                <td><a href="{{url_for('edit_event', sid=student.id, eid=event.id)}}">[edit]</a><br/><a style="color:red" href="{{url_for('delete_event', sid=student.id, eid=event.id)}}">[x]<a></td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
 </div>
 {% endblock %}

@@ -1,0 +1,69 @@
+{# app/templates/add_event.html #}
+
+{% extends "layout.html" %}
+
+{% block title %}Edit Event{% endblock %}
+
+{% block head_extend %}
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#student_uid_name').autocomplete({
+    autoFocus:true,
+    source:"{{url_for('d_autocomplete_student')}}",
+    appendTo: "#autocomplete-container"
+  });
+  $('#time').datetimepicker();
+  $('#now-btn').click(function() {
+    var d = new Date();
+    var s = d.getFullYear()+
+        "/"+
+        (d.getMonth()+1)+
+        "/"+
+        d.getDate()+
+        " "+
+        (d.getHours()+1)+
+        ":"+
+        d.getMinutes();
+    $("#time").val(s);
+  });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="one-half column" style="margin-top: 15%">
+        <h1>Edit Event</h1>
+        <form action="" method="post">
+            Student: <input disabled class="u-full-width" type="text" placeholder="Start Typing..." id="student_uid_name" name="student_uid_name" value="{{event.student.uid_name}}"> <br/>
+            Time: 
+            <div class="row">
+                <div class="ten columns">
+                    <input class="u-full-width" type="text" id="time" name="time" placeholder="YYYY/MM/DD HH:MM" value="{{event.time.strftime("%Y/%m/%d %H:%M")}}">
+                </div>
+                <div class="two columns">
+                    <a id="now-btn" class="u-full-width button" style="padding:0 0;">Now</a><br/>
+                </div>
+            </div>
+            <table style="width:100%">
+                <tr>
+                    <td>Consequence:</td>
+                    <td>{{event.consequence.name}}</td>
+                </tr>
+                <tr>
+                    <td>Description:</td>
+                    <td><textarea disabled style="width:100%">{{event.consequence.description}}</textarea></td>
+                </tr>
+            </table>
+            Comment:<textarea class="u-full-width" name="comment" placeholder="Comment" id="comment" value="{{event.comment}}"></textarea> <br/>
+            <div style="display:{{ "none" if not event.consequence.has_consequence else "block" }}">
+                <input type="checkbox" name="consequence_status" value={{event.consequence_status}}> Consequence Completed
+            </div>
+            <input type="submit" class="button-primary" value="Submit">
+        </form>
+    </div>
+    <div class="one-half column" style="margin-top: 25%">
+        <div id="autocomplete-container"></div>
+    </div>
+</div>
+{% endblock %}

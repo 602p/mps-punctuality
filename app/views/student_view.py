@@ -1,4 +1,5 @@
 from flask import render_template, request, redirect, url_for
+from sqlalchemy import desc
 
 from .. import app, db
 from .. import models
@@ -6,8 +7,10 @@ from .. import models
 @app.route('/student/<sid>')
 def student_view(sid):
 	student=models.Student.query.filter_by(id=int(sid)).one()
+	sevents=list(reversed(models.AttendanceEvent.query.filter_by(student_id=int(sid)).order_by(desc(models.AttendanceEvent.id)).all()))
 	return render_template("student_view.html", 
 		student=student,
+		sorted_events=sevents,
 		assc_events=len(student.attendance_events),
 		consequences_completed=all(e.consequence_status for e in student.attendance_events))
 

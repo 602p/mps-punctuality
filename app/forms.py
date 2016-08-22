@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import StringField, IntegerField, TextAreaField, SelectField, Field
+from wtforms import StringField, IntegerField, TextAreaField, SelectField, Field, BooleanField
 from wtforms.validators import DataRequired
 
 class SQLForm(Form):
@@ -32,3 +32,4 @@ class ConsequenceForm(SQLForm):
 	name = StringField("Name", validators=[DataRequired()])
 	description = TextAreaField("Description")
 	trigger = StringField("Trigger", validators=[DataRequired()])
+	has_consequence = BooleanField("Has Consequence")

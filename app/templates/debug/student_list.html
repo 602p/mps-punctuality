@@ -40,7 +40,7 @@
                 <td>{{student.status}}</td>
                 <td>{{student.attendance_events.__len__()}}</td>
                 <td>{{student.uid_name}}</td>
-                <td><a href="/edit_student/{{student.id}}">[edit]</a> <a class="confirm" href="/delete_student/{{student.id}}">[delete]</a></td>
+                <td><a href="{{url_for('d_edit_student', sid=student.id)}}">[edit]</a> <a class="confirm" href="{{url_for('d_delete_student', sid=student.id)}}">[delete]</a></td>
             </tr>
             {% endfor %}
         </table>
