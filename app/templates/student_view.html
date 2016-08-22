@@ -1,0 +1,70 @@
+{# app/templates/student_view.html #}
+
+{% extends "layout.html" %}
+
+{% block title %}{{student.full_name}}{% endblock %}
+
+{% block head_extend %}
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#time').datetimepicker();
+  $('#now-btn').click(function() {
+    var d = new Date();
+    var s = d.getFullYear()+
+        "/"+
+        (d.getMonth()+1)+
+        "/"+
+        d.getDate()+
+        " "+
+        (d.getHours()+1)+
+        ":"+
+        d.getMinutes();
+    $("#time").val(s);
+  });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row" style="margin-top:15%">
+    <div class="six columns">
+        <div class="row">
+            <div class="six columns">
+                <div class="item">
+                    <img src="/static/noimage.png"><br/>
+                    <span class="caption"><b>{{student.first_name}}&nbsp;{{student.last_name}}</b></span>
+                </div>
+            </div>
+            <div class="six columns">
+                <div class="centered">
+                    Number of Tardies:<br/>
+                    <h3><b style="color:{{'red' if assc_events else 'green'}}">{{assc_events}}</b></h3> <br/>
+                    Consequences Completed:<br/>
+                    <h3><b style="color:{{'green' if consequences_completed else 'red'}}">{{'YES' if consequences_completed else 'NO'}}</b></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="six columns">
+        <div class="row">
+            <div class="twelve columns">
+                <h5>Add a Tardy Event</h5>
+            </div>
+        </div>
+        <form>
+            Time: 
+            <div class="row">
+                <div class="ten columns">
+                    <input class="u-full-width" type="text" id="time"  name="time" placeholder="YYYY/MM/DD HH:MM">
+                </div>
+                <div class="two columns">
+                    <a id="now-btn" class="u-full-width button" style="padding:0 0;">Now</a><br/>
+                </div>
+            </div>
+            <label for="comment">Comment:</label> <textarea class="u-full-width" name="comment" placeholder="Comment" id="comment"></textarea> 
+            <br/>
+            <input type="submit" class="button-primary" value="Submit">
+        </form>
+    </div>
+</div>
+{% endblock %}

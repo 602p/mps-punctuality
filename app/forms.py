@@ -24,7 +24,7 @@ class StudentForm(SQLForm):
 	comment = TextAreaField("Comment")
 
 class EventForm(SQLForm):
-	student_uid_name = StringField("Student", validators=[DataRequired()])
+	student_uid_name = StringField("Student", id="student_uid_name", validators=[DataRequired()])
 	time = StringField("Time", validators=[DataRequired()])
 	comment = TextAreaField("Comment")
 

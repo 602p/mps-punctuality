@@ -1,0 +1,42 @@
+{# app/templates/logged_in_landing.html #}
+
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block head_extend %}
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#simple_search').autocomplete({
+    autoFocus:true,
+    source:"/autocomplete_student",
+    appendTo: "#autocomplete-container"
+  });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="twelve columns" style="margin-top: 15%">
+        <h1>MPS Punctuality Tracker</h1>
+        <h6>David Groos, Louis Goessling et. al.</h6>
+    </div>
+</div>
+<hr/>
+<div class="row">
+    <div class="twelve columns">
+        <form action="{{url_for('student_view_wrapper')}}" method="post">
+            <div class="row">
+                <div class="six columns">
+                    Simple Student Find:
+                    <input type="text" placeholder="Start Typing..." id="simple_search" name="student_uid_name" style="height:100%" class="u-full-width">
+                </div>
+                <div class="six columns">
+                    <div id="autocomplete-container"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
