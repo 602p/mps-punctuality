@@ -22,3 +22,7 @@ class StudentForm(SQLForm):
 	status = SelectField('School Status', choices=[('active', 'Active'), ('inactive', 'Inactive')])
 	phonedata = TextAreaField("Phone Info")
 	comment = TextAreaField("Comment")
+
+class EventForm(SQLForm):
+	student = IntegerField("Student ID", validators=[DataRequired()])
+	time = StringField("Time", validators=[DataRequired()])
