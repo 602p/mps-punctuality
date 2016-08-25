@@ -58,11 +58,11 @@ def login_user_page():
 	form=UsernamePasswordForm(request.form)
 	if form.validate():
 		user=models.User.query.filter_by(username=form.username.data).first()
-		if not user.enabled:
-			flash("Please wait for an administrator to enable your account", 'error')
-			return render_template("login.html", form=form)
 		if not user or not user.check_password(form.password.data):
 			flash("Invalid username or password", 'error')
+			return render_template("login.html", form=form)
+		if not user.enabled:
+			flash("Please wait for an administrator to enable your account", 'error')
 			return render_template("login.html", form=form)
 		login_user(user)
 		flash("Success! Logged in as %s" % user.username)
