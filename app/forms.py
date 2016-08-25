@@ -8,7 +8,7 @@ class SQLForm(Form):
 			if isinstance(value, Field) and item!="csrf_token":
 				getattr(self, item).data = getattr(record, item)
 
-	def fill_to(self, record, exclude):
+	def fill_to(self, record, exclude=[]):
 		for item, value in self.__dict__.items():
 			if isinstance(value, Field) and item!="csrf_token" and item not in exclude:
 				setattr(record, item, value.data)

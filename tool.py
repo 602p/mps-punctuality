@@ -23,3 +23,8 @@ if sys.argv[1]=="seeddb":
 					""
 				))
 	app.db.session.commit()
+if sys.argv[1]=="enableacct":
+	u=app.models.User.query.first()
+	u.enabled=True
+	u.role='admin'
+	app.db.session.commit()
