@@ -6,6 +6,8 @@ import os
 from werkzeug.security import generate_password_hash, \
 	 check_password_hash
 
+ROLE_HIERARCHY=['view', 'edit', 'admin']
+
 class User(db.Model):
 	__tablename__="users"
 	id = db.Column(db.Integer, primary_key=True)
@@ -13,13 +15,13 @@ class User(db.Model):
 	enabled = db.Column(db.Boolean)
 	name = db.Column(db.String(100))
 	username = db.Column(db.String(100))
-	session_token = db.Column(db.String(100))
+	session_token = db.Column(db.String(200))
 	email = db.Column(db.String(100))
-	role = db.Column(db.String(100)) # 'view' 'modify' or 'admin'
+	role = db.Column(db.String(100)) # 'view' 'edit' or 'admin'
 	auth_provider = db.Column(db.String(10)) # Will be 'LOCAL' for now. May be used to support LDAP later
 	password_hash = db.Column(db.String(200)) # for LOCAL auth
 
-	def __init__(self, marss_id, username, name, email, auth_provider, enabled):
+	def __init__(self, marss_id=None, username=None, name=None, email=None, auth_provider=None, enabled=False):
 		self.marss_id=marss_id
 		self.username=username
 		self.name=name
@@ -69,7 +71,7 @@ class Student(db.Model):
 	phonedata = db.Column(db.Text)
 	comment = db.Column(db.Text)
 
-	def __init__(self, marss_id, first_name, last_name, pref_first_name=None, grade=9, status="active", image="<NOIMAGE>", phonedata="", comment=""):
+	def __init__(self, marss_id=None, first_name=None, last_name=None, pref_first_name=None, grade=9, status="active", image="<NOIMAGE>", phonedata="", comment=""):
 		self.marss_id=marss_id
 		self.first_name=first_name
 		self.last_name=last_name
@@ -116,7 +118,7 @@ class AttendanceEvent(db.Model):
 	consequence_status = db.Column(db.Boolean)
 	comment = db.Column(db.Text)
 
-	def __init__(self, student_id, time, comment):
+	def __init__(self, student_id=None, time=None, comment=None):
 		self.student_id=student_id
 		self.time=time
 		self.comment=comment
@@ -137,7 +139,7 @@ class Consequence(db.Model):
 	trigger = db.Column(db.String(100))
 	has_consequence=db.Column(db.Boolean)
 
-	def __init__(self, name, description, trigger, has_consequence):
+	def __init__(self, name=None, description=None, trigger=None, has_consequence=False):
 		self.description=description
 		self.trigger=trigger
 		self.name=name

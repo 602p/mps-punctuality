@@ -1,5 +1,6 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, flash
 import json, datetime
+from flask_login import login_required
 
 from .. import app, db
 from .. import models
@@ -7,11 +8,14 @@ from .. import forms
 from .. import util
 
 @app.route("/_autocomplete_student", methods=['GET'])
+@login_required
 def autocomplete_student():
 	return json.dumps([x.uid_name for x in 
 		models.Student.query.filter(models.Student.full_name.contains(request.args.get("term"))).limit(10).all()])
 
 @app.route("/_add_event/<sid>", methods=['POST'])
+@login_required
+@util.require_user_role('edit')
 def add_event(sid):
 	dateobj=datetime.datetime.strptime(request.form.get("time"), "%Y/%m/%d %H:%M")
 	event=models.AttendanceEvent(int(sid), dateobj, request.form.get("comment"))
@@ -30,9 +34,12 @@ def add_event(sid):
 			event.consequence_status=True
 
 	db.session.commit()
+	flash("Event Added!")
 	return redirect(url_for("student_view", sid=int(sid)))
 
 @app.route("/_delete_event/<sid>/<eid>")
+@login_required
+@util.require_user_role('edit')
 def delete_event(sid, eid):
 	models.AttendanceEvent.query.filter_by(id=int(eid)).delete()
 	db.session.commit()

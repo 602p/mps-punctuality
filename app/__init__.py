@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import json
 import os
+from flask_basicauth import BasicAuth
  
 app = Flask(__name__, static_url_path='/static')
 with open("config.json", 'r') as fd:
@@ -11,3 +12,6 @@ with open("config.json", 'r') as fd:
 app.config["SECRET_KEY"]=os.urandom(24)
 
 db = SQLAlchemy(app)
+
+from . import admin
+

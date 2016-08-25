@@ -1,5 +1,6 @@
 from flask import render_template, redirect, url_for, request
 import sqlalchemy, json, datetime
+from flask_login import login_required
 
 from .. import app, db
 from .. import models
@@ -7,6 +8,8 @@ from .. import forms
 from .. import util
 
 @app.route('/edit_event/<sid>/<eid>', methods=["GET", "POST"])
+@login_required
+@util.require_user_role('edit')
 def edit_event(sid, eid):
 	sid, eid = int(sid), int(eid)
 	if request.method=="POST":

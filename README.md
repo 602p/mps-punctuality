@@ -5,6 +5,7 @@
  * flask
  * flask-wtforms
  * flask-sqlalchemy
+ * flask-admin
 
 ## Usage
 

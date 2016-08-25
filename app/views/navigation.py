@@ -1,5 +1,6 @@
 from flask import render_template, redirect, url_for, request
 import sqlalchemy, json, datetime
+from flask_login import login_required
 
 from .. import app, db
 from .. import models
@@ -7,10 +8,12 @@ from .. import forms
 from .. import util
 
 @app.route("/")
+@login_required
 def home():
 	return render_template("logged_in_landing.html")
 
 @app.route('/overview')
+@login_required
 def overview():
 	result=models.Student.query
 	for k,v in request.args.items():
