@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash
 from sqlalchemy import desc
-from flask_login import login_required
+from flask_login import login_required, current_user
 import datetime
 
 from .. import app, db
@@ -38,11 +38,17 @@ def edit_event_inline_apply(sid, eid):
 	form=forms.EventForm(request.form)
 	if form.validate():
 		event=models.AttendanceEvent.query.filter_by(id=eid).one()
-		form.fill_to(event, exclude=['time'])
+		form.fill_to(event, exclude=['time', 'teacher'])
 		event.time=datetime.datetime.strptime(form.time.data, "%b %d %Y      %I:%M %p")
+		t=models.Teacher.query.filter_by(name=form.teacher.data).first()
+		if not t:
+			flash("Invalid teacher", 'error')
+			return redirect(url_for("student_view", sid=sid)) 
+		event.teacher_id=t.id
+		event.author_id=current_user.id
 		db.session.commit()
 		flash("Updated event")
-		return redirect(url_for("student_view", sid=sid))
+		return redirect(url_for("student_view", sid=sid)+"#tardies")
 	else:
 		util.flash_form_errors(form)
-		return redirect(url_for("student_view", sid=sid))
+		return redirect(url_for("student_view", sid=sid)+"#tardies")

@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, request, flash
 import json, datetime
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from .. import app, db
 from .. import models
@@ -13,6 +13,12 @@ def autocomplete_student():
 	return json.dumps([x.uid_name for x in 
 		models.Student.query.filter(models.Student.full_name.contains(request.args.get("term"))).limit(10).all()])
 
+@app.route("/_autocomplete_teacher", methods=['GET'])
+@login_required
+def autocomplete_teacher():
+	return json.dumps([x.name for x in 
+		models.Teacher.query.filter(models.Teacher.name.contains(request.args.get("term"))).limit(10).all()])
+
 @app.route("/_add_event/<sid>", methods=['POST'])
 @login_required
 @util.require_user_role('edit')
@@ -22,6 +28,13 @@ def add_event(sid):
 	event=models.AttendanceEvent(int(sid), dateobj, models.Reason.query.filter_by(id=int(request.form.get("reason"))).one().text+
 		(": " if comment else "")+comment)
 	db.session.add(event)
+
+	t=models.Teacher.query.filter_by(name=request.form.get("teacher")).first()
+	if not t:
+		flash("Invalid teacher", 'error')
+		return redirect(url_for("student_view", sid=sid)) 
+	event.teacher_id=t.id
+	event.author_id=current_user.id
 
 	count=len(models.AttendanceEvent.query.filter_by(student_id=int(sid)).all())
 	triggered=None
@@ -37,7 +50,7 @@ def add_event(sid):
 
 	db.session.commit()
 	flash("Event Added!")
-	return redirect(url_for("student_view", sid=int(sid)))
+	return redirect(url_for("student_view", sid=int(sid))+"#tardies")
 
 @app.route("/_delete_event/<sid>/<eid>")
 @login_required

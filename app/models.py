@@ -38,6 +38,16 @@ class Reason(db.Model):
 	def __init__(self, text=None):
 		self.text=text
 
+class Teacher(db.Model):
+	__tablename__="teachers"
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(100))
+
+	def __init__(self, name=None):
+		self.name=name
+
+	def __str__(self): return self.name
+
 class User(db.Model):
 	__tablename__="users"
 	id = db.Column(db.Integer, primary_key=True)
@@ -147,6 +157,10 @@ class AttendanceEvent(db.Model):
 	consequence = db.relationship('Consequence', foreign_keys="AttendanceEvent.consequence_id", backref=db.backref('attendance_events', lazy='joined'))
 	consequence_status = db.Column(db.Boolean)
 	comment = db.Column(db.Text)
+	author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+	author = db.relationship('User', foreign_keys="AttendanceEvent.author_id")
+	teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
+	teacher = db.relationship('Teacher', foreign_keys="AttendanceEvent.teacher_id")
 
 	def __init__(self, student_id=None, time=None, comment=None):
 		self.student_id=student_id

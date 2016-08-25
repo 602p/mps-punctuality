@@ -26,7 +26,6 @@ div.item {
 }
 
 .ui-autocomplete { 
-    height:120px; 
     overflow-y:scroll;
 	margin-left:10px;
 	display: block;
@@ -45,4 +44,20 @@ div.item {
 
 .ui-autocomplete li a{
 	color:black;
+}
+
+#create-tardy-box{
+	background-color: rgb(200,200,255);
+	border: 2px solid blue;
+}
+
+.event-time-picker{
+}
+
+.event-teacher-picker{
+	max-width:120px;
+}
+
+.event-comment-area{
+	max-width: 120px;
 }

@@ -29,14 +29,30 @@ function update_date(){
 $(document).ready(function() {
   $('#time').datetimepicker({
     format:'M d Y      g:i A',
-    timepicker:false
+    timepicker:false,
+    hours12:true,
+    validateOnBlur:false
   });
   $('.event-time-picker').datetimepicker({
     format:'M d Y      g:i A',
-    timepicker:false
+    timepicker:false,
+    hours12:true,
+    validateOnBlur:false
   });
   $('#now-btn').click(update_date);
   update_date();
+  $('#teacher-autofill').autocomplete({
+    autoFocus:true,
+    source:"{{url_for('autocomplete_teacher')}}",
+    appendTo: "#autocomplete-teacher-container"
+  });
+  for (i = 1; i < row_count+1; i++) { 
+    $('#event-teacher-picker-'+i).autocomplete({
+        autoFocus:true,
+        source:"{{url_for('autocomplete_teacher')}}",
+        appendTo: "#autocomplete-entries-"+i
+      });
+    }
 });
 
 function show_edit_row(id){
@@ -71,10 +87,10 @@ function show_edit_row(id){
             </div>
         </div>
     </div>
-    <div class="six columns">
+    <div class="six columns" id="create-tardy-box">
         <div class="row">
             <div class="twelve columns">
-                <h5>Add a Tardy Event</h5>
+                <h5 class="centered">Add a Tardy Event</h5>
             </div>
         </div>
         <form action="{{url_for('add_event', sid=student.id)}}" method='post'>
@@ -93,6 +109,8 @@ function show_edit_row(id){
                 <option value="{{reason.id}}">{{reason.text}}</option>
                 {% endfor %}
             </select>
+            Teacher:
+            <input type="text" id="teacher-autofill" name="teacher" placeholder="Start Typing..."><div id="autocomplete-teacher-container"></div>
             <br/><textarea class="u-full-width" name="comment" placeholder="Comment" id="comment"></textarea> 
             <br/>
             <input type="submit" class="button-primary" value="Submit">
@@ -102,15 +120,15 @@ function show_edit_row(id){
 <hr/>
 <div class="row">
     <div class="twelve columns">
-        <div class="centered"><h6>Log of Tardies:</h6></div><br/>
-        <table class="u-full-width">
+        <div class="centered"><h6><a name="tardies" style="color:black">Log of Tardies: (Click row to Edit)</a></h6></div><br/>
+        <table class="u-max-full-width" width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr style="font-weight:bold">
                 <td>#</td>
                 <td>Date</td>
                 <td>Time</td>
                 <td>Period</td>
                 <td>Teacher</td>
-                <td>Author</td>
+                <td>Entered By</td>
                 <td>Reason</td>
                 <td>Consequence</td>
                 <td>Status</td>
@@ -122,8 +140,8 @@ function show_edit_row(id){
                 <td>{{event.time.strftime("%b %d %Y")}}</td>
                 <td>{{event.time.strftime("%I:%M")[1 if event.time.strftime("%I")[0]=="0" else 0:]}}</td>
                 <td>{{event.period}}</td>
-                <td></td>
-                <td></td>
+                <td>{{event.teacher.name}}</td>
+                <td>{{event.author.name}}</td>
                 <td>{{event.comment}}</td>
                 <td>{{event.consequence.name}}</td>
                 <td><div style="color:{{'green' if event.consequence_status else 'red'}};font-weight:{{'' if event.consequence_status else 'bold'}}">{{('Complete' if event.consequence_status else 'INCOMPLETE') if event.consequence.has_consequence else 'N/a'}}</div></td>
@@ -134,14 +152,14 @@ function show_edit_row(id){
             <form action="{{url_for('edit_event_inline_apply', sid=student.id, eid=event.id)}}" method="post">
             <tr style="display:none" id="hidden-row-{{sorted_events.index(event)+1}}">
                 <td>{{sorted_events.index(event)+1}}<div style="display:none">{{form.id}}{{form.csrf_token}}</div></td>
-                <td>{{form.time(class_="event-time-picker")}}</td>
-                <td>((updated on save))</td>
+                <td colspan="2">{{form.time(class_="event-time-picker")}}</td>
                 <td>{{event.period}}</td>
-                <td></td>
-                <td></td>
-                <td>{{form.comment}}</td>
+                <td>{{form.teacher(class_="event-teacher-picker", id="event-teacher-picker-%d"%(sorted_events.index(event)+1))}}<br/>
+                <div id="autocomplete-entries-{{sorted_events.index(event)+1}}"></div></td>
+                <td>{{current_user.name}}</td>
+                <td>{{form.comment(class_="event-comment-area")}}</td>
                 <td>{{event.consequence.name}}</td>
-                <td>{{form.consequence_status}}</td>
+                <td>{% if event.consequence.has_consequence %}{{form.consequence_status}}{% else %}<div style="display:none">{{form.consequence_status}}</div>No Consequence{% endif %}</td>
                 <td><input type="submit" class="button-primary" value="Save"></td>
             </tr>
             </form>
