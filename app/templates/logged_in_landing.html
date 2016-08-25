@@ -28,13 +28,10 @@ $(document).ready(function() {
 <div class="row">
     <div class="twelve columns">
         <form action="{{url_for('student_view_wrapper')}}" method="post">
+            Type in name, Select from list, hit Enter:
             <div class="row">
-                <div class="six columns">
-                    Simple Student Find:
-                    <input type="text" placeholder="Start Typing..." id="simple_search" name="student_uid_name" style="height:100%" class="u-full-width"><br/>
-                    <input type="submit" class="button-primary" value="Go">
-                </div>
-                <div class="six columns">
+                <div class="twelve columns">
+                    <input type="text" placeholder="Start Typing..." id="simple_search" name="student_uid_name" style="height:100%" class="u-full-width">
                     <div id="autocomplete-container"></div>
                 </div>
             </div>
