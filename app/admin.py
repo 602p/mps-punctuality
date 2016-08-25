@@ -15,8 +15,20 @@ class SecureView(ModelView):
 		flash("Woah nelly! You aren't an admin!", 'error')
 		return redirect(url_for("home"))
 
+class UserView(SecureView):
+	form_choices = {
+	    'role': [
+	        ('view', 'View Only'),
+	        ('edit', 'Edit AttendanceEvents'),
+	        ('admin', 'Access this interface')
+	    ]
+	}
+	column_exclude_list = ['session_token', 'password_hash']
+
 admin = Admin(app, name='mps-punctuality', template_mode='bootstrap3')
-admin.add_view(SecureView(models.User, db.session))
+admin.add_view(UserView(models.User, db.session))
 admin.add_view(SecureView(models.Student, db.session))
 admin.add_view(SecureView(models.AttendanceEvent, db.session))
 admin.add_view(SecureView(models.Consequence, db.session))
+admin.add_view(SecureView(models.Reason, db.session))
+admin.add_view(SecureView(models.Period, db.session))

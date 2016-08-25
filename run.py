@@ -2,7 +2,6 @@
 import os
 
 from app import app
-import app.views.debug
 import app.views.student_view
 import app.views.backend
 import app.views.navigation

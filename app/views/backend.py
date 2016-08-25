@@ -17,8 +17,10 @@ def autocomplete_student():
 @login_required
 @util.require_user_role('edit')
 def add_event(sid):
-	dateobj=datetime.datetime.strptime(request.form.get("time"), "%Y/%m/%d %H:%M")
-	event=models.AttendanceEvent(int(sid), dateobj, request.form.get("comment"))
+	dateobj=datetime.datetime.strptime(request.form.get("time"), "%b %d %Y      %I:%M %p")
+	comment=request.form.get("comment")
+	event=models.AttendanceEvent(int(sid), dateobj, models.Reason.query.filter_by(id=int(request.form.get("reason"))).one().text+
+		(": " if comment else "")+comment)
 	db.session.add(event)
 
 	count=len(models.AttendanceEvent.query.filter_by(student_id=int(sid)).all())

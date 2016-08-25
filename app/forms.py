@@ -8,28 +8,14 @@ class SQLForm(Form):
 			if isinstance(value, Field) and item!="csrf_token":
 				getattr(self, item).data = getattr(record, item)
 
-	def fill_to(self, record):
+	def fill_to(self, record, exclude):
 		for item, value in self.__dict__.items():
-			if isinstance(value, Field) and item!="csrf_token":
+			if isinstance(value, Field) and item!="csrf_token" and item not in exclude:
 				setattr(record, item, value.data)
 
-class StudentForm(SQLForm):
-	marss_id = IntegerField('Student ID', validators=[DataRequired()])
-	first_name = StringField('First Name', validators=[DataRequired()])
-	pref_first_name = StringField('Preffered First Name')
-	last_name = StringField('Last Name', validators=[DataRequired()])
-	grade = IntegerField('Current Grade', validators=[DataRequired()])
-	status = SelectField('School Status', choices=[('active', 'Active'), ('inactive', 'Inactive')])
-	phonedata = TextAreaField("Phone Info")
-	comment = TextAreaField("Comment")
-
 class EventForm(SQLForm):
-	student_uid_name = StringField("Student", id="student_uid_name", validators=[DataRequired()])
 	time = StringField("Time", validators=[DataRequired()])
-	comment = TextAreaField("Comment")
-
-class ConsequenceForm(SQLForm):
-	name = StringField("Name", validators=[DataRequired()])
-	description = TextAreaField("Description")
-	trigger = StringField("Trigger", validators=[DataRequired()])
-	has_consequence = BooleanField("Has Consequence")
+	comment = TextAreaField("Reason")
+	consequence_status = BooleanField("consequence_completed")
+	teacher=StringField("Teacher")
+	id=IntegerField("internal_id")

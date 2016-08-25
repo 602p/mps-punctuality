@@ -6,22 +6,47 @@
 
 {% block head_extend %}
 <script type="text/javascript">
-$(document).ready(function() {
-  $('#time').datetimepicker();
-  $('#now-btn').click(function() {
+var row_count={{sorted_events.__len__()}};
+var monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+function update_date(){
     var d = new Date();
-    var s = d.getFullYear()+
-        "/"+
-        (d.getMonth()+1)+
-        "/"+
+    var s = 
+        monthNames[d.getMonth()].substring(0,3)+
+        " "+
         d.getDate()+
         " "+
-        (d.getHours())+
-        ":"+
-        d.getMinutes();
+        d.getFullYear()+
+        "      ";
+    if (d.getHours()>12){
+        s = s +(d.getHours()-12)+":"+d.getMinutes()+" PM";
+    }else{
+        s = s +(d.getHours()-12)+":"+d.getMinutes()+" AM";
+    }
     $("#time").val(s);
+}
+$(document).ready(function() {
+  $('#time').datetimepicker({
+    format:'M d Y      g:i A',
+    timepicker:false
   });
+  $('.event-time-picker').datetimepicker({
+    format:'M d Y      g:i A',
+    timepicker:false
+  });
+  $('#now-btn').click(update_date);
+  update_date();
 });
+
+function show_edit_row(id){
+    for (i = 1; i < row_count+1; i++) { 
+        $('#main-row-'+i).css('display', 'table-row');
+        $('#hidden-row-'+i).css('display', 'none');
+    }
+    $('#main-row-'+id).css('display', 'none');
+    $('#hidden-row-'+id).css('display', 'table-row');
+}
 </script>
 {% endblock %}
 
@@ -62,7 +87,13 @@ $(document).ready(function() {
                     <a id="now-btn" class="u-full-width button" style="padding:0 0;">Now</a><br/>
                 </div>
             </div>
-            <label for="comment">Comment:</label> <textarea class="u-full-width" name="comment" placeholder="Comment" id="comment"></textarea> 
+            Reason:
+            <select id="reason" name="reason">
+                {% for reason in reasons %}
+                <option value="{{reason.id}}">{{reason.text}}</option>
+                {% endfor %}
+            </select>
+            <br/><textarea class="u-full-width" name="comment" placeholder="Comment" id="comment"></textarea> 
             <br/>
             <input type="submit" class="button-primary" value="Submit">
         </form>
@@ -72,32 +103,49 @@ $(document).ready(function() {
 <div class="row">
     <div class="twelve columns">
         <div class="centered"><h6>Log of Tardies:</h6></div><br/>
-        <table>
+        <table class="u-full-width">
             <tr style="font-weight:bold">
                 <td>#</td>
+                <td>Date</td>
                 <td>Time</td>
                 <td>Period</td>
                 <td>Teacher</td>
                 <td>Author</td>
-                <td>Comment</td>
+                <td>Reason</td>
                 <td>Consequence</td>
-                <td>Description</td>
                 <td>Status</td>
                 <td>Action</td>
             </tr>
             {% for event in sorted_events %}
-            <tr>
+            <tr id="main-row-{{sorted_events.index(event)+1}}" onclick="show_edit_row({{sorted_events.index(event)+1}});">
                 <td>{{sorted_events.index(event)+1}}</td>
-                <td>{{event.time.strftime("%Y/%m/%d %H:%M")}}</td>
-                <td></td>
+                <td>{{event.time.strftime("%b %d %Y")}}</td>
+                <td>{{event.time.strftime("%I:%M")[1 if event.time.strftime("%I")[0]=="0" else 0:]}}</td>
+                <td>{{event.period}}</td>
                 <td></td>
                 <td></td>
                 <td>{{event.comment}}</td>
                 <td>{{event.consequence.name}}</td>
-                <td>{{event.consequence.description}}</td>
-                <td><div style="color:{{'green' if event.consequence_status else 'red'}};font-weight:{{'' if event.consequence_status else 'bold'}}">{{('Complete' if event.consequence_status else 'INCOMPLETE') if event.consequence.has_consequence else 'N/a'}}<div></td>
-                <td><a href="{{url_for('edit_event', sid=student.id, eid=event.id)}}">[edit]</a><br/><a style="color:red" href="{{url_for('delete_event', sid=student.id, eid=event.id)}}">[x]<a></td>
+                <td><div style="color:{{'green' if event.consequence_status else 'red'}};font-weight:{{'' if event.consequence_status else 'bold'}}">{{('Complete' if event.consequence_status else 'INCOMPLETE') if event.consequence.has_consequence else 'N/a'}}</div></td>
+                <td><a style="color:red" href="{{url_for('delete_event', sid=student.id, eid=event.id)}}">[x]<a></td>
             </tr>
+            {% with %}
+            {% set form = event_forms[sorted_events.index(event)] %}
+            <form action="{{url_for('edit_event_inline_apply', sid=student.id, eid=event.id)}}" method="post">
+            <tr style="display:none" id="hidden-row-{{sorted_events.index(event)+1}}">
+                <td>{{sorted_events.index(event)+1}}<div style="display:none">{{form.id}}{{form.csrf_token}}</div></td>
+                <td>{{form.time(class_="event-time-picker")}}</td>
+                <td>((updated on save))</td>
+                <td>{{event.period}}</td>
+                <td></td>
+                <td></td>
+                <td>{{form.comment}}</td>
+                <td>{{event.consequence.name}}</td>
+                <td>{{form.consequence_status}}</td>
+                <td><input type="submit" class="button-primary" value="Save"></td>
+            </tr>
+            </form>
+            {% endwith %}
             {% endfor %}
         </table>
     </div>

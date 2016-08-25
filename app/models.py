@@ -8,6 +8,36 @@ from werkzeug.security import generate_password_hash, \
 
 ROLE_HIERARCHY=['view', 'edit', 'admin']
 
+class Period(db.Model):
+	__tablename__="periods"
+	id = db.Column(db.Integer, primary_key=True)
+	number = db.Column(db.Integer)
+	trigger = db.Column(db.String(200))
+
+	def __init__(self, text=None, trigger=None):
+		self.text=text
+		self.trigger=trigger
+
+	def triggered(self, date):
+		ns={"date":date, "f":date.strftime, "m":(int(date.strftime("%H"))*60)+int(date.strftime("%M"))}
+		print(ns)
+		return eval(self.trigger, {}, ns)
+
+	@classmethod
+	def get_for(cls, date):
+		for item in cls.query.all():
+			if item.triggered(date):
+				return item.number
+		return -1
+
+class Reason(db.Model):
+	__tablename__="reasons"
+	id = db.Column(db.Integer, primary_key=True)
+	text = db.Column(db.Text)
+
+	def __init__(self, text=None):
+		self.text=text
+
 class User(db.Model):
 	__tablename__="users"
 	id = db.Column(db.Integer, primary_key=True)
@@ -127,6 +157,10 @@ class AttendanceEvent(db.Model):
 	@classmethod
 	def empty(cls):
 		return cls(-1,datetime.datetime.now(),"")
+
+	@property
+	def period(self):
+		return Period.get_for(self.time)
 
 	def __repr__(self):
 		return "<AttendanceEvent %r: %r>" % (self.id, self.time)
