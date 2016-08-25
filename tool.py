@@ -22,4 +22,4 @@ if sys.argv[1]=="seeddb":
 					"",
 					""
 				))
-		app.db.session.commit()
+	app.db.session.commit()

@@ -1,0 +1,26 @@
+{# app/templates/logins.html #}
+
+{% extends "layout.html" %}
+
+{% block title %}Log In{% endblock %}
+
+{% block content %}
+<div style="text-align:center;margin-top:5%;"><h3 style="display:inline-block"><h1 style="display:inline-block">Log In</h1></div>
+<form action="" method="POST">
+<div class="row">
+    <div class="twelve columns" style="margin-top: 5%">
+        {% if error %}
+            <b style="color:red">Invalid Form Data -> {{error}}<br/></b>
+        {% endif %}
+        Username: {{form.username}}<br/>
+        Password: {{form.password}}<br/>
+        {{form.csrf_token}}
+    </div>
+</div>
+<div class="row u-full-width">
+    <div class="twelve columns u-full-width">
+        <input type="submit" class="button-primary u-full-width" value="Login">
+    </div>
+</div>
+</form>
+{% endblock %}

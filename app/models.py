@@ -2,6 +2,59 @@ from . import db
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy import func
 import datetime
+import os
+from werkzeug.security import generate_password_hash, \
+	 check_password_hash
+
+class User(db.Model):
+	__tablename__="users"
+	id = db.Column(db.Integer, primary_key=True)
+	marss_id = db.Column(db.Integer)
+	enabled = db.Column(db.Boolean)
+	name = db.Column(db.String(100))
+	username = db.Column(db.String(100))
+	session_token = db.Column(db.String(100))
+	email = db.Column(db.String(100))
+	role = db.Column(db.String(100)) # 'view' 'modify' or 'admin'
+	auth_provider = db.Column(db.String(10)) # Will be 'LOCAL' for now. May be used to support LDAP later
+	password_hash = db.Column(db.String(200)) # for LOCAL auth
+
+	def __init__(self, marss_id, username, name, email, auth_provider, enabled):
+		self.marss_id=marss_id
+		self.username=username
+		self.name=name
+		self.email=email
+		self.enabled=enabled
+		self.auth_provider=auth_provider
+		self.generate_session_token()
+
+	@classmethod
+	def empty(cls):
+		return cls(0,'','','','LOCAL',False)
+
+	def generate_session_token(self):
+		self.session_token=str(os.urandom(50))
+
+	def set_password(self, plaintext):
+		self.password_hash=generate_password_hash(plaintext)
+
+	def check_password(self, plaintext):
+		return check_password_hash(self.password_hash, plaintext)
+
+	@property
+	def is_authenticated(self):
+		return True
+ 
+	@property
+	def is_active(self):
+		return True
+ 
+	@property
+	def is_anonymous(self):
+		return False
+ 
+	def get_id(self):
+		return self.session_token
 
 class Student(db.Model):
 	__tablename__="students"

@@ -7,6 +7,7 @@ import app.views.student_view
 import app.views.backend
 import app.views.navigation
 import app.views.event
+import app.views.user
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
