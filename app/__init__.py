@@ -14,3 +14,8 @@ db = SQLAlchemy(app)
 
 from . import admin
 
+from .views import student_view
+from .views import backend
+from .views import navigation
+from .views import event
+from .views import user
