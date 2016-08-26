@@ -155,7 +155,7 @@ class AttendanceEvent(db.Model):
 	time = db.Column(db.DateTime)
 	consequence_id = db.Column(db.Integer, db.ForeignKey('consequences.id'))
 	consequence = db.relationship('Consequence', foreign_keys="AttendanceEvent.consequence_id", backref=db.backref('attendance_events', lazy='joined'))
-	consequence_status = db.Column(db.Boolean)
+	consequence_status = db.Column(db.Text)
 	comment = db.Column(db.Text)
 	author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 	author = db.relationship('User', foreign_keys="AttendanceEvent.author_id")
@@ -175,6 +175,14 @@ class AttendanceEvent(db.Model):
 	@property
 	def period(self):
 		return Period.get_for(self.time)
+
+	@property
+	def consequence_statuses(self):
+		return [int(i) for i in self.consequence_status.split(",")]
+
+	@property
+	def consequences_completed(self):
+		return all(self.consequence_statuses)
 
 	def __repr__(self):
 		return "<AttendanceEvent %r: %r>" % (self.id, self.time)
