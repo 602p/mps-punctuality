@@ -64,7 +64,7 @@ def login_user_page():
 			flash("This account uses local authentication, please enter a password", 'error')
 			form.local_login.data=True
 			return render_template("login.html", form=form)
-		if not user and not form.local_login.data:
+		if not form.local_login.data:
 			return redirect(url_for("oauth_login"))
 		if not user or not user.check_password(form.password.data):
 			flash("Invalid Username/Password", 'error')
