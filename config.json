@@ -1,5 +1,4 @@
 {
-	"SQLALCHEMY_DATABASE_URI":"sqlite:///../instance/database.db",
 	"BASIC_AUTH_USERNAME":"admin",
 	"BASIC_AUTH_PASSWORD":"admin"
 }

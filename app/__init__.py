@@ -8,6 +8,7 @@ with open("config.json", 'r') as fd:
 	d=json.load(fd)
 	print("config.json loaded -> "+str(d))
 	app.config.update(d)
+app.config["SQLALCHEMY_DATABASE_URI"]=os.environ["DATABASE_URL"]
 app.config["SECRET_KEY"]=os.urandom(24)
 
 db = SQLAlchemy(app)
