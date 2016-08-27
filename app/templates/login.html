@@ -8,9 +8,9 @@
 <script type="text/javascript">
 function update_visibility(){
     if($("#use_local").is(":checked")){
-        $("#password").css("display", "block");
+        $("#locallogin").css("display", "block");
     }else{
-        $("#password").css("display", "none");
+        $("#locallogin").css("display", "none");
     }
 }
 </script>
@@ -29,9 +29,9 @@ update_visibility();
         {% if error %}
             <b style="color:red">Invalid Form Data -> {{error}}<br/></b>
         {% endif %}
-        Username: {{form.username}}<br/>
         Use Local Login: {{form.local_login(onclick="update_visibility()", id="use_local")}}<br/>
-        <div id="password" onload="update_visibility()">Password: {{form.password}}<br/></div>
+        <div id="locallogin" onload="update_visibility()">Username: {{form.username}}<br/>
+        Password: {{form.password}}<br/></div>
         {{form.csrf_token}}
     </div>
 </div>

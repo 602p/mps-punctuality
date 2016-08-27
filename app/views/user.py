@@ -17,7 +17,7 @@ login_manager.init_app(app)
 login_manager.login_view = "login_user_page"
 
 class UsernamePasswordForm(forms.SQLForm):
-	username = StringField("Username", validators=[DataRequired()])
+	username = StringField("Username")
 	local_login=BooleanField("Local Login")
 	password = PasswordField("Password")
 
@@ -59,17 +59,14 @@ def login_user_page():
 
 	form=UsernamePasswordForm(request.form)
 	if form.validate():
-		user=models.User.query.filter_by(username=form.username.data).first()
-		if user and not form.local_login.data and user.auth_provider=="LOCAL":
-			flash("This account uses local authentication, please enter a password", 'error')
-			form.local_login.data=True
-			return render_template("login.html", form=form)
-		if not form.local_login.data:
+		if form.local_login.data:
+			user=models.User.query.filter_by(username=form.username.data).first()
+			if not user or not user.check_password(form.password.data):
+				flash("Invalid Username/Password", 'error')
+				return render_template("login.html", form=form)
+			return authentication.try_login_user(user, url_for("home"))
+		else:
 			return redirect(url_for("oauth_login"))
-		if not user or not user.check_password(form.password.data):
-			flash("Invalid Username/Password", 'error')
-			return render_template("login.html", form=form)
-		return authentication.try_login_user(user, url_for("home"))
 	else:
 		util.flash_form_errors(form)
 		return render_template("login.html", form=form)
