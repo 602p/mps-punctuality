@@ -8,6 +8,8 @@ with open("config.json", 'r') as fd:
 	d=json.load(fd)
 	print("config.json loaded -> "+str(d))
 	app.config.update(d)
+app.config['GOOGLE_ID'] = os.environ.get("GOOGLE_ID", '')
+app.config['GOOGLE_SECRET'] = os.environ.get("GOOGLE_SECRET", '')
 app.config["SQLALCHEMY_DATABASE_URI"]=os.environ["DATABASE_URL"]
 app.config["SECRET_KEY"]=os.environ.get("FLASK_SECRET_KEY", os.urandom(24))
 
@@ -20,3 +22,5 @@ from .views import backend
 from .views import navigation
 from .views import event
 from .views import user
+
+from . import oauth

@@ -17,7 +17,7 @@
     {% block head_extend %}
     {% endblock %}
   </head>
-  <body>
+  <body onload="{% block onload %}{% endblock %}">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="row">

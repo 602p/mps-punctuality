@@ -8,6 +8,7 @@ from .. import app, db
 from .. import models
 from .. import forms
 from .. import util
+from .. import authentication
 
 from flask_login import LoginManager, login_user, logout_user, login_required
 
@@ -17,7 +18,8 @@ login_manager.login_view = "login_user_page"
 
 class UsernamePasswordForm(forms.SQLForm):
 	username = StringField("Username", validators=[DataRequired()])
-	password = PasswordField("Password", validators=[DataRequired()])
+	local_login=BooleanField("Local Login")
+	password = PasswordField("Password")
 
 class UserDataForm(UsernamePasswordForm):
 	name = StringField("Name")
@@ -58,15 +60,20 @@ def login_user_page():
 	form=UsernamePasswordForm(request.form)
 	if form.validate():
 		user=models.User.query.filter_by(username=form.username.data).first()
+		if user.auth_provider!="LOCAL":
+			flash("Invalid User auth type for this method", 'error')
+			return render_template("login.html", form=form)
+		if not form.local_login.data:
+			if user:
+				if user.auth_provider=="LOCAL":
+					flash("This account uses local authentication, please enter a password", 'error')
+					form.local_login.data=True
+					return render_template("login.html", form=form)
+			return redirect(url_for("oauth_login"))
 		if not user or not user.check_password(form.password.data):
-			flash("Invalid username or password", 'error')
+			flash("Invalid Username/Password", 'error')
 			return render_template("login.html", form=form)
-		if not user.enabled:
-			flash("Please wait for an administrator to enable your account", 'error')
-			return render_template("login.html", form=form)
-		login_user(user)
-		flash("Success! Logged in as %s" % user.username)
-		return redirect(url_for("home"))
+		return authentication.try_login_user(user, url_for("home"))
 	else:
 		util.flash_form_errors(form)
 		return render_template("login.html", form=form)
@@ -75,5 +82,6 @@ def login_user_page():
 @login_required
 def logout_user_page():
     logout_user()
+    session.pop('google_token', None)
     flash("Logged out")
     return redirect(url_for('login_user_page'))

@@ -4,6 +4,22 @@
 
 {% block title %}Log In{% endblock %}
 
+{% block head_extend %}
+<script type="text/javascript">
+function update_visibility(){
+    if($("#use_local").is(":checked")){
+        $("#password").css("display", "block");
+    }else{
+        $("#password").css("display", "none");
+    }
+}
+</script>
+{% endblock %}
+
+{% block onload %}
+update_visibility();
+{% endblock %}
+
 {% block content %}
 <div style="text-align:center;margin-top:5%;"><h1 style="display:inline-block">Log In</h1></div>
 <div style="text-align:center;"><h5 style="display:inline-block"><a href="/register">Register</a></h5></div>
@@ -14,8 +30,8 @@
             <b style="color:red">Invalid Form Data -> {{error}}<br/></b>
         {% endif %}
         Username: {{form.username}}<br/>
-        Password: {{form.password}}<br/>
-        (OAuth coming soon)
+        Use Local Login: {{form.local_login(onclick="update_visibility()", id="use_local")}}<br/>
+        <div id="password" onload="update_visibility()">Password: {{form.password}}<br/></div>
         {{form.csrf_token}}
     </div>
 </div>

@@ -61,13 +61,14 @@ class User(db.Model):
 	auth_provider = db.Column(db.String(10)) # Will be 'LOCAL' for now. May be used to support LDAP later
 	password_hash = db.Column(db.String(200)) # for LOCAL auth
 
-	def __init__(self, marss_id=None, username=None, name=None, email=None, auth_provider=None, enabled=False):
+	def __init__(self, marss_id=None, username=None, name=None, email=None, auth_provider=None, enabled=False, role="view"):
 		self.marss_id=marss_id
 		self.username=username
 		self.name=name
 		self.email=email
 		self.enabled=enabled
 		self.auth_provider=auth_provider
+		self.role=role
 		self.generate_session_token()
 
 	@classmethod
