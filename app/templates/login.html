@@ -22,7 +22,6 @@ update_visibility();
 
 {% block content %}
 <div style="text-align:center;margin-top:5%;"><h1 style="display:inline-block">Log In</h1></div>
-<div style="text-align:center;"><h5 style="display:inline-block"><a href="/register">Register</a></h5></div>
 <form action="" method="POST">
 <div class="row">
     <div class="twelve columns" style="margin-top: 5%">
@@ -30,7 +29,7 @@ update_visibility();
             <b style="color:red">Invalid Form Data -> {{error}}<br/></b>
         {% endif %}
         Use Local Login: {{form.local_login(onclick="update_visibility()", id="use_local")}}<br/>
-        <div id="locallogin" onload="update_visibility()">Username: {{form.username}}<br/>
+        <div id="locallogin" onload="update_visibility()">Username: {{form.username}} <a href="/register">Register</a><br/>
         Password: {{form.password}}<br/></div>
         {{form.csrf_token}}
     </div>

@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, request
 import sqlalchemy, json, datetime
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from .. import app, db
 from .. import models
@@ -10,7 +10,7 @@ from .. import util
 @app.route("/")
 @login_required
 def home():
-	return render_template("logged_in_landing.html")
+	return render_template("logged_in_landing.html", user=current_user)
 
 @app.route('/overview')
 @login_required
