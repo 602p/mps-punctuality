@@ -60,16 +60,14 @@ def login_user_page():
 	form=UsernamePasswordForm(request.form)
 	if form.validate():
 		user=models.User.query.filter_by(username=form.username.data).first()
-		if user.auth_provider!="LOCAL":
-			flash("Invalid User auth type for this method", 'error')
-			return render_template("login.html", form=form)
-		if not form.local_login.data:
-			if user:
+		if user:
+			if not form.local_login.data:
 				if user.auth_provider=="LOCAL":
 					flash("This account uses local authentication, please enter a password", 'error')
 					form.local_login.data=True
 					return render_template("login.html", form=form)
-			return redirect(url_for("oauth_login"))
+				else:
+					return redirect(url_for("oauth_login"))
 		if not user or not user.check_password(form.password.data):
 			flash("Invalid Username/Password", 'error')
 			return render_template("login.html", form=form)
