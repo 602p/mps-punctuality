@@ -22,7 +22,7 @@ function update_date(){
     if (d.getHours()>12){
         s = s +(d.getHours()-12)+":"+d.getMinutes()+" PM";
     }else{
-        s = s +(d.getHours()-12)+":"+d.getMinutes()+" AM";
+        s = s +(d.getHours())+":"+d.getMinutes()+" AM";
     }
     $("#time").val(s);
 }
