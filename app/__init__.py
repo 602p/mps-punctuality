@@ -15,12 +15,12 @@ app.config["SECRET_KEY"]=os.environ.get("FLASK_SECRET_KEY", os.urandom(24))
 
 db = SQLAlchemy(app)
 
-from . import admin
-
 from .views import student_view
 from .views import backend
 from .views import navigation
 from .views import event
 from .views import user
+
+from . import admin
 
 from . import oauth

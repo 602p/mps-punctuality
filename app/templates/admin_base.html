@@ -1,0 +1,10 @@
+{% extends "admin/base.html" %}
+{% block head_tail %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-latest.js"></script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $(".navbar-brand").attr("href", "/");
+    console.log("Patched href");
+  });
+  </script
+{% endblock %}
