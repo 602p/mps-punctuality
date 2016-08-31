@@ -52,4 +52,4 @@ path = os.path.dirname(__file__)
 admin.add_view(SecureFileAdmin(path, '/', name='Files'))
 
 admin.add_link(MenuLink(name='BACK TO SITE', category='', url='/'))
-admin.add_link(MenuLink(name='LOG OUT', category='', url='/'))
+admin.add_link(MenuLink(name='LOG OUT', category='', url='/logout'))
