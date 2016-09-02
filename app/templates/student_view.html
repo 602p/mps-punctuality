@@ -141,7 +141,7 @@ function show_edit_row(id){
                 <td>Action</td>
             </tr>
             {% for event in sorted_events %}
-            <tr id="main-row-{{sorted_events.index(event)+1}}" onclick="show_edit_row({{sorted_events.index(event)+1}});">
+            <tr id="main-row-{{sorted_events.index(event)+1}}" onclick="show_edit_row({{sorted_events.index(event)+1}});" style="cursor:pointer">
                 <td>{{sorted_events.index(event)+1}}</td>
                 <td>{{event.time.strftime("%b %d %Y")}}</td>
                 <td>{{event.time.strftime("%I:%M")[1 if event.time.strftime("%I")[0]=="0" else 0:]}}</td>
