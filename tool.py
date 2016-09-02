@@ -1,7 +1,7 @@
 import app, sys
 import app.models
 import random
-from names import TEST_NAMES
+from names import TEST_NAMES, TEST_TEACHERS, TEST_REASONS, TEST_CONSQUENCES
 
 if sys.argv[1]=="createdb":
 	app.db.create_all()
@@ -22,6 +22,16 @@ if sys.argv[1]=="seeddb":
 					"",
 					""
 				))
+	for n, name in enumerate(TEST_TEACHERS):
+		print("Adding Teacher #%02d -> %s" %(n, name))
+		app.db.session.add(app.models.Teacher(name))
+	for n, name in enumerate(TEST_REASONS):
+		print("Adding Reason #%02d -> %s" %(n, name))
+		app.db.session.add(app.models.Reason(name))
+	for n, d in enumerate(TEST_CONSQUENCES):
+		print("Adding consquence #%02d -> %s" %(n, str(d)))
+		app.db.session.add(app.models.Consequence(**d))
+
 	app.db.session.commit()
 if sys.argv[1]=="enableacct":
 	u=app.models.User.query.first()

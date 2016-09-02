@@ -23,7 +23,11 @@ def autocomplete_teacher():
 @login_required
 @util.require_user_role('edit')
 def add_event(sid):
-	dateobj=datetime.datetime.strptime(request.form.get("time"), "%b %d %Y      %I:%M %p")
+	try:
+		dateobj=datetime.datetime.strptime(request.form.get("time"), "%b %d %Y      %I:%M %p")
+	except ValueError:
+		flash("Invalid Date/Time!", 'error')
+		return redirect(url_for("student_view", sid=int(sid)))
 	comment=request.form.get("comment")
 	event=models.AttendanceEvent(int(sid), dateobj, models.Reason.query.filter_by(id=int(request.form.get("reason"))).one().text+
 		(": " if comment else "")+comment)
@@ -46,7 +50,7 @@ def add_event(sid):
 	if triggered:
 		event.consequence_id=triggered.id
 		if not triggered.has_consequence:
-			event.consequence_status=True
+			event.consequence_status="True"
 
 	db.session.commit()
 	flash("Event Added!")

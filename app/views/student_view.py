@@ -20,7 +20,7 @@ def student_view(sid):
 		student=student,
 		sorted_events=sevents,
 		assc_events=len(student.attendance_events),
-		consequences_completed=all(e.consequence_status for e in student.attendance_events),
+		consequences_completed=all(e.consequences_completed for e in student.attendance_events),
 		reasons=models.Reason.query.all(),
 		event_forms=event_forms)
 
@@ -38,8 +38,16 @@ def edit_event_inline_apply(sid, eid):
 	form=forms.EventForm(request.form)
 	if form.validate():
 		event=models.AttendanceEvent.query.filter_by(id=eid).one()
-		form.fill_to(event, exclude=['time', 'teacher'])
-		event.time=datetime.datetime.strptime(form.time.data, "%b %d %Y      %I:%M %p")
+		form.fill_to(event, exclude=['time', 'teacher', 'consequence_status'])
+		statuses=[]
+		for i, _ in enumerate(event.consequence.description_lines):
+			statuses.append(bool(request.form.get("line_%d" % i,"")))
+		event.consequence_statuses=statuses
+		try:
+			event.time=datetime.datetime.strptime(form.time.data, "%b %d %Y      %I:%M %p")
+		except ValueError:
+			flash("Invalid Date/Time", 'error')
+			return redirect(url_for("student_view", sid=sid))
 		t=models.Teacher.query.filter_by(name=form.teacher.data).first()
 		if not t:
 			flash("Invalid teacher", 'error')

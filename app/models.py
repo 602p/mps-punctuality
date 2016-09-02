@@ -137,7 +137,7 @@ class Student(db.Model):
 
 	@property
 	def unresolved_events(self):
-		return len([e for e in self.attendance_events if not e.consequence_status])
+		return len([e for e in self.attendance_events if not e.consequences_completed])
 
 	@classmethod
 	def split_uid_name(cls, name):
@@ -167,7 +167,7 @@ class AttendanceEvent(db.Model):
 		self.student_id=student_id
 		self.time=time
 		self.comment=comment
-		self.consequence_status=False
+		self.consequence_status="False"
 
 	@classmethod
 	def empty(cls):
@@ -179,11 +179,15 @@ class AttendanceEvent(db.Model):
 
 	@property
 	def consequence_statuses(self):
-		return [int(i) for i in self.consequence_status.split(",")]
+		return [(True if i=="True" else False) or not self.consequence.has_consequence for i in self.consequence_status.split(",")]
+
+	@consequence_statuses.setter
+	def consequence_statuses(self, val):
+		self.consequence_status=",".join(str(x) for x in val)
 
 	@property
 	def consequences_completed(self):
-		return all(self.consequence_statuses)
+		return all(self.consequence_statuses) if self.consequence.has_consequence else True
 
 	def __repr__(self):
 		return "<AttendanceEvent %r: %r>" % (self.id, self.time)
@@ -205,6 +209,10 @@ class Consequence(db.Model):
 	@classmethod
 	def empty(cls):
 		return cls("","","",False)
+
+	@property
+	def description_lines(self):
+		return self.description.split("\n")
 
 	def __repr__(self):
 		return "<Consequence %r: %r -> %r [%r]>" % (self.name, self.trigger, self.description, str(self.has_consequence))
