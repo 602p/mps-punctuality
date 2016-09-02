@@ -103,16 +103,22 @@ function show_edit_row(id){
                     <a id="now-btn" class="u-full-width button" style="padding:0 0;">Now</a><br/>
                 </div>
             </div>
-            Reason:
-            <select id="reason" name="reason">
-                {% for reason in reasons %}
-                <option value="{{reason.id}}">{{reason.text}}</option>
-                {% endfor %}
-            </select>
-            Teacher:
-            <input type="text" id="teacher-autofill" name="teacher" placeholder="Start Typing..."><div id="autocomplete-teacher-container"></div>
-            <br/><textarea class="u-full-width" name="comment" placeholder="Comment" id="comment"></textarea> 
-            <br/>
+            <div class="row">
+                <div class="six columns">
+                    Reason:
+                    <select id="reason" name="reason" class="u-full-width">
+                        {% for reason in reasons %}
+                        <option value="{{reason.id}}">{{reason.text}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="six columns">
+                    Teacher:
+                    <input type="text" id="teacher-autofill" name="teacher" placeholder="Start Typing..." class="u-full-width">
+                </div>
+            </div>
+            <div id="autocomplete-teacher-container"></div>
+            <textarea class="u-full-width" name="comment" placeholder="Comment" id="comment"></textarea>
             <input type="submit" class="button-primary" value="Submit">
         </form>
     </div>
