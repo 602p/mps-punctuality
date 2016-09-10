@@ -26,8 +26,15 @@ def student_view(sid):
 
 @app.route('/redirect_from_sid_name', methods=['GET', 'POST'])
 def student_view_wrapper():
-	full_name, mid = models.Student.split_uid_name(request.form.get("student_uid_name"))
+	try:
+		full_name, mid = models.Student.split_uid_name(request.form.get("student_uid_name"))
+	except (IndexError, ValueError):
+		flash("Please select a student from the dropdown list", 'error')
+		return redirect(url_for('home'))
 	student=models.Student.query.filter_by(full_name=full_name, marss_id=mid).first()
+	if not student:
+		flash("Please select a student from the dropdown list", 'error')
+		return redirect(url_for('home'))
 	return redirect(url_for("student_view", sid=student.id))
 
 @app.route("/_edit_event/<sid>/<eid>", methods=['POST'])
