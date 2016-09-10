@@ -3,6 +3,7 @@ from wtforms import StringField, IntegerField, TextAreaField, SelectField, Field
 from wtforms.validators import DataRequired
 
 class SQLForm(Form):
+	"""Handy dandy form mixin for filling to-and-from SQLAlchemy model instances"""
 	def fill_from(self, record):
 		for item, value in self.__dict__.items():
 			if isinstance(value, Field) and item!="csrf_token":

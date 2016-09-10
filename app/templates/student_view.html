@@ -10,6 +10,7 @@ var row_count={{sorted_events.__len__()}};
 var monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
+var enabled = {% if current_user.role=='view' %}false{% else %}true{% endif %};
 function update_date(){
     var d = new Date();
     var s = 
@@ -56,12 +57,14 @@ $(document).ready(function() {
 });
 
 function show_edit_row(id){
-    for (i = 1; i < row_count+1; i++) { 
-        $('#main-row-'+i).css('display', 'table-row');
-        $('#hidden-row-'+i).css('display', 'none');
+    if (enabled){
+        for (i = 1; i < row_count+1; i++) { 
+            $('#main-row-'+i).css('display', 'table-row');
+            $('#hidden-row-'+i).css('display', 'none');
+        }
+        $('#main-row-'+id).css('display', 'none');
+        $('#hidden-row-'+id).css('display', 'table-row');
     }
-    $('#main-row-'+id).css('display', 'none');
-    $('#hidden-row-'+id).css('display', 'table-row');
 }
 </script>
 {% endblock %}
@@ -119,7 +122,7 @@ function show_edit_row(id){
             </div>
             <div id="autocomplete-teacher-container"></div>
             <textarea class="u-full-width" name="comment" placeholder="Comment" id="comment"></textarea>
-            <input type="submit" class="button-primary" value="Submit">
+            <input type="submit" class="button-primary" value="Submit" {% if current_user.role=='view' %}disabled style="cursor:not-allowed"{% endif %}> {% if current_user.role=='view' %} You do not have permission to edit{% endif %}
         </form>
     </div>
 </div>
@@ -141,7 +144,7 @@ function show_edit_row(id){
                 <td>Action</td>
             </tr>
             {% for event in sorted_events %}
-            <tr id="main-row-{{sorted_events.index(event)+1}}" onclick="show_edit_row({{sorted_events.index(event)+1}});" style="cursor:pointer">
+            <tr id="main-row-{{sorted_events.index(event)+1}}" onclick="show_edit_row({{sorted_events.index(event)+1}});" {% if current_user.role=='view' %} style="cursor:not-allowed" {% else %} style="cursor:pointer"{% endif %}>
                 <td>{{sorted_events.index(event)+1}}</td>
                 <td>{{event.time.strftime("%b %d %Y")}}</td>
                 <td>{{event.time.strftime("%I:%M")[1 if event.time.strftime("%I")[0]=="0" else 0:]}}</td>
@@ -171,7 +174,7 @@ function show_edit_row(id){
                     {% endwith %}
                     {% endfor %}
                 </td>
-                <td><a style="color:red" href="{{url_for('delete_event', sid=student.id, eid=event.id)}}">[x]<a></td>
+                <td>{% if current_user.role=='view' %}(You do not have edit permissions){% else %}<a style="color:red" href="{{url_for('delete_event', sid=student.id, eid=event.id)}}">[DELETE]<a>{% endif %}</td>
             </tr>
             {% with form = event_forms[sorted_events.index(event)] %}
             <form action="{{url_for('edit_event_inline_apply', sid=student.id, eid=event.id)}}" method="post">

@@ -3,7 +3,7 @@ from flask_oauthlib.client import OAuth
 from flask_login import login_user
 import json
 
-from . import authentication
+from . import util
 from . import app, db
 from . import models
 oauth = OAuth(app)
@@ -29,23 +29,27 @@ def oauth_login():
 @app.route('/login/authorized')
 def oauth_authorized():
     resp = google.authorized_response()
-    if resp is None:
+    if resp is None: #OAuth authorization failed
         flash("OAuth login failed: %s -> %s" %(request.args['error_reason'], request.args['error_description']))
         return redirect(url_for("home"))
-    session['google_token'] = (resp['access_token'], '')
-    me = google.get('userinfo').data
-    user = models.User.query.filter_by(username=me["email"], auth_provider="OAUTH").first()
-    if user:
-        return authentication.try_login_user(user)
-    else:
-        user=models.User(
-            marss_id=-1,
-            username=me["email"],
-            name=me["name"],
-            email=me["email"],
-            auth_provider="OAUTH",
-            enabled=False
-        )
+    session['google_token'] = (resp['access_token'], '') #Stick it in the session (if we potentially decide to use
+                                                         #more of Google's API features later, e.g. mailing or
+                                                         #whatever we'll need this for the OAuth scope in the 
+                                                         #API calls
+    me = google.get('userinfo').data #Snarf out the user's free data
+    user = models.User.query.filter_by(username=me["email"], auth_provider="OAUTH").first() #Is there a user with this
+                                                                                            #email using OAuth already?
+    if user: #If so...
+        return util.try_login_user(user) #Proceed to try to log them in
+    else: #Otherwise
+        user=models.User( #Create a (disabled) account for them for the admin to enable later
+            marss_id=-1,  #Cant find this w/o some kind of DB dump, if even applicable
+            username=me["email"], #Google's return gaurenteed to have email, this is the username for OAuth accounts
+            name=me["name"], #Google's return sometimes has name, otherwise empty string
+            email=me["email"], #Store it here too
+            auth_provider="OAUTH", #Use OAUTH provider, duh!
+            enabled=False #And leave them disabled
+        ) #Default permission='view'
         db.session.add(user)
         db.session.commit()
         flash("Please wait for an Administrator to enable your account")
