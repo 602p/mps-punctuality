@@ -28,6 +28,9 @@ function update_date(){
     $("#time").val(s);
 }
 $(document).ready(function() {
+  if (!enabled){
+    $("#create-tardy-box").find('*').prop("disabled", true);
+  }
   $('#time').datetimepicker({
     format:'M d Y      g:i A',
     timepicker:false,
@@ -90,10 +93,10 @@ function show_edit_row(id){
             </div>
         </div>
     </div>
-    <div class="six columns" id="create-tardy-box">
+    <div class="six columns {% if current_user.role=='view' %}disabled-hand-container{% endif %}" id="create-tardy-box">
         <div class="row">
             <div class="twelve columns">
-                <h5 class="centered">Add a Tardy Event</h5>
+                <h5 class="centered">Add a Tardy Event?</h5>
             </div>
         </div>
         <form action="{{url_for('add_event', sid=student.id)}}" method='post'>
@@ -122,7 +125,7 @@ function show_edit_row(id){
             </div>
             <div id="autocomplete-teacher-container"></div>
             <textarea class="u-full-width" name="comment" placeholder="Comment" id="comment"></textarea>
-            <input type="submit" class="button-primary" value="Submit" {% if current_user.role=='view' %}disabled style="cursor:not-allowed"{% endif %}> {% if current_user.role=='view' %} You do not have permission to edit{% endif %}
+            <input type="submit" class="button-primary" value="Submit"> {% if current_user.role=='view' %} You do not have permission to edit{% endif %}
         </form>
     </div>
 </div>

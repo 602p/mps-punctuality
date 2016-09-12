@@ -5,6 +5,7 @@ Simple tooling for interacting with the DB.
 USAGE:
 	python tool.py createdb 		- Create the DataBase tables
 	python tool.py resetdb			- Drop all DataBase tables
+	python tool.py invsessions		- Invalidate all User Sessions
 	python tool.py seeddb [num]		- Seed the database with default values, including [num] students. Default=20
 							Also creates the user localadmin with password `admin`
 	python -i tool.py 				- Do nothing, so as to allow you to interact with the DB thru the python REPL"""
@@ -27,6 +28,10 @@ elif sys.argv[1]=="createdb":
 elif sys.argv[1]=="resetdb":
 	app.db.drop_all()
 	app.db.create_all()
+elif sys.argv[1]=="invsessions":
+	for u in app.models.User.query.all():
+		u.generate_session_token()
+	app.db.session.commit()
 elif sys.argv[1]=="seeddb":
 	for n, name in enumerate(TEST_NAMES[:int(sys.argv[2] if len(sys.argv)>2 else 20)]): #Seed students, defaulting to 20
 		print("Adding Name #%02d -> %s" % (n, name))

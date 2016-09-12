@@ -61,3 +61,7 @@ div.item {
 .event-comment-area{
 	max-width: 120px;
 }
+
+.disabled-hand-container *{
+	cursor:not-allowed !important;
+}
