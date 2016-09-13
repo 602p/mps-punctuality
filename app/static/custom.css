@@ -97,6 +97,7 @@ div.item {
 }
 
 #header-link-logout{
+	float:right;
 	background-color: rgb(100,0,0);
 }
 
