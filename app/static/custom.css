@@ -65,3 +65,41 @@ div.item {
 .disabled-hand-container *{
 	cursor:not-allowed !important;
 }
+
+.header-container{
+	top:0px;
+}
+
+.header-container ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+.header-container li {
+    float: left;
+}
+
+.header-container li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.header-container li a:hover {
+    background-color: #111;
+}
+
+#header-link-logout{
+	background-color: rgb(100,0,0);
+}
+
+#header-link-home{
+	background-color: #FF8C00;
+}

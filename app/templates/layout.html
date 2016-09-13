@@ -18,6 +18,26 @@
     {% endblock %}
   </head>
   <body onload="{% block onload %}{% endblock %}">
+    <div class="row" id="header-bar-container">
+      <div class="header-container twelve columns">
+        <ul>
+          <li class="header-link" id="header-link-home">
+            <a href="{{url_for('home')}}">South Punctuality Tracker</a>
+          </li>
+          {% if current_user.role=="admin" %}
+            <li class="header-link" id="header-link-admin">
+              <a href="/admin/">Admin Tools</a>
+            </li>
+          {% endif %}
+          <li class="header-link" id="header-link-unresolved">
+            <a href="/overview?meta_unresolved=yes">Unresolved Tardies</a>
+          </li>
+          <li class="header-link" id="header-link-logout">
+            <a href="{{url_for('logout_user_page')}}">LOG OUT</a>
+          </li>
+        </ul>
+      </div>
+    </div>
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="row">
