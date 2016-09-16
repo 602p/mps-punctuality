@@ -104,3 +104,15 @@ div.item {
 #header-link-home{
 	background-color: #FF8C00;
 }
+
+button[disabled] {
+    background:#ccc;
+    border-color: #ccc;
+    text-shadow:none;
+}
+
+button[disabled]:hover {
+    background:#ccc;
+    border-color: #ccc;
+    text-shadow:none;
+}

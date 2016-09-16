@@ -9,9 +9,19 @@
 function update_visibility(){
     $("#header-bar-container").css("display","none");
     if($("#use_local").is(":checked")){
+        var el = $("#local-username").get(0);
+        var elemLen = el.value.length;
+
+        el.selectionStart = 0;
+        el.selectionEnd = elemLen;
+        el.focus();
         $("#locallogin").css("display", "block");
+        $("#register-link").css("display", "block");
+        $("#oauth-login").prop("disabled", true);
     }else{
         $("#locallogin").css("display", "none");
+        $("#register-link").css("display", "none");
+        $("#oauth-login").prop("disabled", false);
     }
 }
 </script>
@@ -22,22 +32,34 @@ update_visibility();
 {% endblock %}
 
 {% block content %}
-<div style="text-align:center;margin-top:5%;"><h1 style="display:inline-block">Log In</h1></div>
+<div style="text-align:center;margin-top:5%;"><h1 style="display:inline-block">Log In</h1>
+</div>
 <form action="" method="POST">
-<div class="row">
+<div class="row u-full-width">
+    <div class="twelve columns u-full-width">
+        <button type="submit" class="button-primary u-full-width" id="oauth-login">Login through your District Google Account</button>
+        <input type="checkbox" name="local_login" style="display:none">
+        {{form.csrf_token}}
+    </div>
+</div>
+</form>
+<form action="" method="POST">
+<div class="row" style="float:right;text-align:right;">
+    Use Local Login: {{form.local_login(onclick="update_visibility()", id="use_local")}}
+    <a href="{{url_for('register_user_page')}}" id="register-link">Register a new Local Account</a>
+</div>
+<div class="row" style="">
     <div class="twelve columns" style="margin-top: 5%">
         {% if error %}
             <b style="color:red">Invalid Form Data -> {{error}}<br/></b>
         {% endif %}
-        Use Local Login: {{form.local_login(onclick="update_visibility()", id="use_local")}}<br/>
-        <div id="locallogin" onload="update_visibility()">Username: {{form.username}} <a href="/register">Register</a><br/>
-        Password: {{form.password}}<br/></div>
-        {{form.csrf_token}}
-    </div>
-</div>
-<div class="row u-full-width">
-    <div class="twelve columns u-full-width">
-        <input type="submit" class="button-primary u-full-width" value="Login">
+        
+        <div id="locallogin" onload="update_visibility()">
+            Username: {{form.username(class="u-full-width", id="local-username")}}<br/>
+            Password: {{form.password(class="u-full-width")}}<br/>
+            {{form.csrf_token}}
+            <input type="submit" class="button-primary u-full-width" value="Login">
+        </div>
     </div>
 </div>
 </form>
