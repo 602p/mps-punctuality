@@ -7,7 +7,6 @@
 {% block head_extend %}
 <script type="text/javascript">
 function update_visibility(){
-    $("#header-bar-container").css("display","none");
     if($("#use_local").is(":checked")){
         var el = $("#local-username").get(0);
         var elemLen = el.value.length;
