@@ -23,7 +23,7 @@ $(document).ready(function() {
 <div style="text-align:center;margin-top:5%"><h1>MPS Punctuality Tracker</h1></div>
 <div class="row">
     <div class="twelve columns">
-        <h3>Find an Individual</h3>
+        <h3 style="display:inline-block">Find an Individual</h3>  <a onclick='alert("Start typing a students name or ID, and click on a suggested name to go to their page");' href="#">?</a>
         <div class="row">
             <div class="twelve columns">
                 <input type="text" placeholder="Start Typing and Click on the Students name" id="simple_search" name="student_uid_name" style="height:100%" class="u-full-width">
@@ -34,7 +34,7 @@ $(document).ready(function() {
 </div>
 <div class="row">
     <div class="twelve columns">
-        <hr/><h3>Find a Group</h3>
+        <hr/><h3 style="display:inline-block">Find a Group</h3>  <a onclick='alert("Enter any number of search terms, and click search to see a list of matching students. If terms match only one student, you will be taken to their page.");' href="#">?</a>
         <form action="{{url_for('overview')}}"
             <br/>
             <div class="row">

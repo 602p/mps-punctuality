@@ -155,27 +155,28 @@ function show_edit_row(id){
                 <td>{{event.teacher.name}}</td>
                 <td>{{event.author.name}}</td>
                 <td>{{event.comment}}</td>
-                <td>
+                <td colspan="2">
                     <b>{{event.consequence.name}}</b><br/>
+                    <table class="u-full-width">
                     {% for line in event.consequence.description_lines %}
                     {% with lineid = event.consequence.description_lines.index(line) %}
-                        <div style="color:{{'green' if event.consequence_statuses[lineid] else 'red'}};font-weight:{{'' if event.consequence_statuses[lineid] else 'bold'}}">
-                            {{line}}
-                        </div>
+                        <tr>
+                            <td>
+                                <div style="color:{{'green' if event.consequence_statuses[lineid] else 'red'}};font-weight:{{'' if event.consequence_statuses[lineid] else 'bold'}}">
+                                    {{line}}
+                                </div>
+                            </td>
+                            <td>
+                                {% if event.consequence_statuses[lineid] %}
+                                <img src="/static/dwcheckyes.svg" height="24" width="24"><br/>
+                                {% else %}
+                                <img src="/static/dwcheckno.svg" height="24" width="24"><br/>
+                                {% endif %}
+                            </td>
+                        </tr>
                     {% endwith %}
                     {% endfor %}
-                </td>
-                <td>
-                    &nbsp;<br/>
-                    {% for line in event.consequence.description_lines %}
-                    {% with lineid = event.consequence.description_lines.index(line) %}
-                    {% if event.consequence_statuses[lineid] %}
-                    <div style="color:green;">✔</div>
-                    {% else %}
-                    <div style="color:red;font-weight:bold;">❎</div>
-                    {% endif %}
-                    {% endwith %}
-                    {% endfor %}
+                    </table>
                 </td>
                 <td>{% if current_user.role=='view' %}(You do not have edit permissions){% else %}<a style="color:red" href="{{url_for('delete_event', sid=student.id, eid=event.id)}}">[DELETE]<a>{% endif %}</td>
             </tr>
@@ -189,32 +190,26 @@ function show_edit_row(id){
                 <div id="autocomplete-entries-{{sorted_events.index(event)+1}}"></div></td>
                 <td>{{current_user.name}}</td>
                 <td>{{form.comment(class_="event-comment-area")}}</td>
-                <td>
+                <td colspan="2">
                     <b>{{event.consequence.name}}</b><br/>
+                    
                     {% if event.consequence.has_consequence %}
+                    <table class="u-full-width">
                         {% for line in event.consequence.description_lines %}
+                        <tr>
                         {% with lineid = event.consequence.description_lines.index(line) %}
-                            <div>
+                            <td>
                                 {{line}}
-                            </div>
-                        {% endwith %}
-                        {% endfor %}
-                    {% else %}
-                    No Consequence
-                    {% endif %}
-                </td>
-                <td>
-                    &nbsp;<br/>
-                    {% if event.consequence.has_consequence %}
-                        {% for line in event.consequence.description_lines %}
-                        {% with lineid = event.consequence.description_lines.index(line) %}
-                            <div>
+                            </td>
+                            <td>
                                 <input type="checkbox" name="line_{{lineid}}" {% if event.consequence_statuses[lineid] %}checked{% endif %}>
-                            </div>
+                            </td>
+                        </tr>
                         {% endwith %}
                         {% endfor %}
+                    </table>
                     {% else %}
-                    N/a
+                    No consequence.
                     {% endif %}
                 </td>
                 <td><input type="submit" class="button-primary" value="Save"></td>
