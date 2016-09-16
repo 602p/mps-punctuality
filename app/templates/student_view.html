@@ -106,7 +106,7 @@ function show_edit_row(id){
                     <input class="u-full-width" type="text" id="time"  name="time" placeholder="YYYY/MM/DD HH:MM">
                 </div>
                 <div class="two columns">
-                    <a id="now-btn" class="u-full-width button" style="padding:0 0;">Now</a><br/>
+                    <button type="button" id="now-btn" class="u-full-width button" style="padding:0 0;">Now</button><br/>
                 </div>
             </div>
             <div class="row">
@@ -125,7 +125,7 @@ function show_edit_row(id){
             </div>
             <div id="autocomplete-teacher-container"></div>
             <textarea class="u-full-width" name="comment" placeholder="Comment" id="comment"></textarea>
-            <input type="submit" class="button-primary" value="Submit"> {% if current_user.role=='view' %} You do not have permission to edit{% endif %}
+            <button type="submit" class="button-primary" id="submit-button">Submit</button> {% if current_user.role=='view' %} You do not have permission to edit{% endif %}
         </form>
     </div>
 </div>
