@@ -27,7 +27,7 @@ def student_view(sid):
 @app.route('/redirect_from_sid_name', methods=['GET', 'POST'])
 def student_view_wrapper():
 	try:
-		full_name, mid = models.Student.split_uid_name(request.form.get("student_uid_name"))
+		full_name, mid = models.Student.split_uid_name(request.args.get("student_uid_name"))
 	except (IndexError, ValueError):
 		flash("Please select a student from the dropdown list", 'error')
 		return redirect(url_for('home'))

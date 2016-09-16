@@ -10,7 +10,10 @@ $(document).ready(function() {
   $('#simple_search').autocomplete({
     autoFocus:true,
     source:"{{url_for('autocomplete_student')}}",
-    appendTo: "#autocomplete-container"
+    appendTo: "#autocomplete-container",
+    select:function(event, ui){
+        window.location.href="{{url_for('student_view_wrapper')}}?student_uid_name="+escape(ui.item.value);
+    }
   });
 });
 </script>
@@ -20,21 +23,18 @@ $(document).ready(function() {
 <div style="text-align:center;margin-top:5%"><h1>MPS Punctuality Tracker</h1></div>
 <div class="row">
     <div class="twelve columns">
-        <form action="{{url_for('student_view_wrapper')}}" method="post">
-            Type in name, Select from list, hit Enter:
-            <div class="row">
-                <div class="twelve columns">
-                    <input type="text" placeholder="Start Typing..." id="simple_search" name="student_uid_name" style="height:100%" class="u-full-width">
-                    <div id="autocomplete-container"></div>
-                </div>
+        <h3>Find an Individual</h3>
+        <div class="row">
+            <div class="twelve columns">
+                <input type="text" placeholder="Start Typing and Click on the Students name" id="simple_search" name="student_uid_name" style="height:100%" class="u-full-width">
+                <div id="autocomplete-container"></div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
-<hr/>
 <div class="row">
     <div class="twelve columns">
-        Advanced Search (CONTAINS search for all terms)<br/>
+        <hr/><h3>Find a Group</h3>
         <form action="{{url_for('overview')}}"
             <br/>
             <div class="row">
@@ -50,7 +50,7 @@ $(document).ready(function() {
             </div>
             <div class="row">
                 <div class="four columns">
-                    <input type="text" placeholder="MARSS ID" name="marss_id" class="u-full-width">
+                    <input type="text" placeholder="Student ID" name="marss_id" class="u-full-width">
                 </div>
                 <div class="four columns">
                     <input type="text" placeholder="More than # tardies" name="meta_tardies_more" class="u-full-width">
@@ -84,7 +84,7 @@ $(document).ready(function() {
                     </select>
                 </div>
             </div>
-            <input type="submit" class="button-primary" value="Search">
+            <input type="submit" class="button-primary u-full-width" value="Search">
         </form>
     </div>
 </div>

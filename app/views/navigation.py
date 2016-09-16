@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, flash
 import sqlalchemy, json, datetime
 from flask_login import login_required, current_user
 
@@ -21,7 +21,10 @@ def overview():
 			if k=="status" and v!="":
 				result=result.filter_by(status=v)
 			elif v!="":
-				result=result.filter(getattr(models.Student, k).contains(v))
+				if v.isdecimal():
+					result=result.filter(getattr(models.Student, k)==v)
+				else:
+					result=result.filter(getattr(models.Student, k).contains(v))
 				
 	students=result.all()
 	if request.args.get("meta_unresolved"):
@@ -30,4 +33,11 @@ def overview():
 		students=[s for s in students if len(s.attendance_events)>int(request.args.get("meta_tardies_more"))]
 	if request.args.get("meta_tardies_less"):
 		students=[s for s in students if len(s.attendance_events)<int(request.args.get("meta_tardies_less"))]
+
+	if len(students)==0:
+		flash("Your search returned no students", 'error')
+		return redirect(url_for('home'))
+	if len(students)==1:
+		flash("Your search returned only one student. You have been redirected to their page")
+		return redirect(url_for('student_view', sid=students[0].id))
 	return render_template("overview.html", students=students)
