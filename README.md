@@ -4,7 +4,7 @@
 
 Install PostgresSQL, and set environment var DATABASE_URL to its URI (e.g. postgres://username:password@url/database)
 Create a VirtualEnv and install modules from requirements.txt (`python -m pip install -r requirements.txt`)
-Set up database with `python tool.py createdb`
+Set up database with `python tool.py createdb` (This will create a local admin account with username/password localadmin/admin)
 Seed sample students with `python tool.py seeddb`
 Run server with `python run.py`
 
