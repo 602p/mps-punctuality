@@ -15,16 +15,16 @@ def home():
 @app.route('/overview')
 @login_required
 def overview():
-	result=models.Student.query
-	for k,v in request.args.items():
-		with util.ignored(AttributeError):
-			if k=="status" and v!="":
+	result=models.Student.query #Start building a query
+	for k,v in request.args.items(): #For each argument
+		with util.ignored(AttributeError): #Transparently ignore invalid attributes
+			if k=="status" and v!="": #If searching by status, just filter_by status
 				result=result.filter_by(status=v)
-			elif v!="":
-				if v.isdecimal():
+			elif v!="": #Else:
+				if v.isdecimal(): #If searching a number (MARSS ID or Grade), search with a equals
 					result=result.filter(getattr(models.Student, k)==v)
 				else:
-					result=result.filter(getattr(models.Student, k).contains(v))
+					result=result.filter(getattr(models.Student, k).contains(v)) #Contains search otherwise
 				
 	students=result.all()
 	if request.args.get("meta_unresolved"):
