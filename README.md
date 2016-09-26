@@ -15,7 +15,7 @@
 
  * MAKE SURE `FLASK_DEBUG` is set to 0, otherwise you'll have a massive security hole
  * (Optional, but reccomended) Set up Gunicorn/Apache/NGINX to run as a frontend server
-   * If your server of choice will spawn multiple WSGI workers (gunicorn, probably others) set `FLASK_SECRET` to some random text as a crypto seed across the workers, otherwise you will have intermittent session behavior
+   * If your server of choice will spawn multiple WSGI workers (gunicorn, probably others) set `FLASK_SECRET_KEY` to some random text as a crypto seed across the workers, otherwise you will have intermittent session behavior
    * Gunicorn is listed in requirements.txt so you should have it installed already, run with `gunicorn app:app`
  * IMPORTANT: Remove/Change localadmin to something more secure
  * Run server thru a scheduler/rc as needed, your good to go
